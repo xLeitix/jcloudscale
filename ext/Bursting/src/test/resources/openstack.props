@@ -1,0 +1,13 @@
+verbose=true
+
+auth.credentials=passwordCredentials
+auth.username=TOCHANGE
+auth.password=TOCHANGE
+auth.tenantName=CloudScale
+
+identity.endpoint.publicURL=http://openstack.infosys.tuwien.ac.at:5000/v2.0
+
+test.glance=false
+test.swift=false
+
+mq.address=TOCHANGE

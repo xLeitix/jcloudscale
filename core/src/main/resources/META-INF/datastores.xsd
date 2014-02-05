@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <!-- datastores root element -->
+    <xs:element name="datastores">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="datastore" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- datastore element -->
+    <xs:element name="datastore">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="host" type="xs:string"/>
+                <xs:element name="port" type="xs:positiveInteger" minOccurs="0"/>
+                <xs:element name="dataunit" type="xs:string" minOccurs="0"/>
+                <xs:element name="driver" type="xs:string"/>
+                <xs:element ref="libs" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!--external libs root element -->
+    <xs:element name="libs">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="lib" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- external lib element -->
+    <xs:element name="lib">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="lib-name" type="xs:string"/>
+                <xs:element name="lib-wrapper" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

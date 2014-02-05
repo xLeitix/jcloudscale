@@ -1,0 +1,50 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+     <modelVersion>4.0.0</modelVersion>
+     <artifactId>jcloudscale.server</artifactId>
+     <name>JCloudScale Server Component</name>
+     <description>JCloudScale Server Component</description>
+     <groupId>jcloudscale</groupId>
+     <version>0.2.0</version>
+     <repositories>
+        <repository>
+                <id>infosys-repository</id>
+                <url>http://www.infosys.tuwien.ac.at/mvn</url>
+        </repository>
+     </repositories>
+     <dependencies>		
+		<dependency>
+			<groupId>jcloudscale</groupId>
+			<artifactId>jcloudscale.core</artifactId>
+			<version>0.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>jcloudscale</groupId>
+			<artifactId>jcloudscale.datastorelib</artifactId>
+			<version>0.2.0</version>
+		</dependency>
+	</dependencies>
+     <build>
+          <plugins>
+                    <plugin>
+                         <groupId>org.codehaus.mojo</groupId>
+                         <artifactId>exec-maven-plugin</artifactId>
+                         <executions>
+                              <execution>
+                                   <goals>
+                                        <goal>exec</goal>
+                                   </goals>
+                              </execution>
+                         </executions>
+                         <configuration>
+                              <executable>java</executable>
+                              <arguments>
+                                   <argument>-classpath</argument>
+                                   <classpath />
+                                <argument>at.ac.tuwien.infosys.jcloudscale.server.JCloudScaleServerRunner</argument>
+                              </arguments>
+                         </configuration>
+                    </plugin>
+               </plugins>
+     </build>
+</project>

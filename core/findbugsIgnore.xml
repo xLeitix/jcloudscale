@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+	
+	<!-- RST mail from 13th november 2013 -->
+	<Match>
+		<Class name="at.ac.tuwien.infosys.jcloudscale.logging.ClientLoggingConfiguration" />
+		<Bug pattern="IS2_INCONSISTENT_SYNC" />
+	</Match>
+	
+	<!-- They appear whenever we return or acquire any complex and store it to private filed. I think that this issue should be disabled at all. -->
+	<Match>
+		<Bug pattern="EI_EXPOSE_REP, EI_EXPOSE_REP2" />
+	</Match>
+	
+	<!-- these are bugs in FindBugs -->
+	<Match>
+		<Or>
+			<Class name="at.ac.tuwien.infosys.jcloudscale.logging.LogReceiver$LogServerListener" />
+			<Class name="at.ac.tuwien.infosys.jcloudscale.management.JCloudScaleReferenceCallbackListener$MessageHandler" />
+			<Class name="at.ac.tuwien.infosys.jcloudscale.server.JCloudScaleResourcePublisher" />
+			<Class name="at.ac.tuwien.infosys.jcloudscale.server.ServerLogger" />
+		</Or>
+		<Bug pattern="NP_ALWAYS_NULL" />
+	</Match>
+	<Match>
+		<Class name="at.ac.tuwien.infosys.jcloudscale.logging.SysoutputReceiver$ServerOutputListener" />
+		<Bug pattern="NP_NULL_PARAM_DEREF_NONVIRTUAL" />
+	</Match>
+	
+	<!--  occur in the places in configuration where we store some unserializable data in fields that anyways will not be transferred to the server as server may not have code for these classes.  -->
+	<Match>
+		<Or>
+			<Class name="at.ac.tuwien.infosys.jcloudscale.classLoader.caching.CachingClassLoaderConfiguration" />
+			<Class name="at.ac.tuwien.infosys.jcloudscale.configuration.CommonConfiguration" />
+		</Or>
+		<Bug pattern="SE_BAD_FIELD" />
+	</Match>
+	<Match>
+		<Or>
+			<Class name="at.ac.tuwien.infosys.jcloudscale.classLoader.caching.fileCollectors.FileBasedFileCollector" />
+			<Class name="at.ac.tuwien.infosys.jcloudscale.policy.sample.HostPerObjectScalingPolicy" />
+			<Class name="at.ac.tuwien.infosys.jcloudscale.configuration.CommonConfiguration" />
+			<Class name="at.ac.tuwien.infosys.jcloudscale.classLoader.caching.CachingClassLoaderConfiguration" />
+		</Or>
+		<Bug pattern="SE_BAD_FIELD_STORE" />
+	</Match>
+	
+</FindBugsFilter>

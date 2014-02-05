@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<datastores>
+    <datastore>
+        <name>riak</name>
+        <host>127.0.0.1</host>
+        <port>8098</port>
+        <dataunit>test</dataunit>
+        <driver>at.ac.tuwien.infosys.jcloudscale.datastore.driver.riak.RiakDriver</driver>
+    </datastore>
+
+    <datastore>
+        <name>couchdb</name>
+        <host>127.0.0.1</host>
+        <port>5984</port>
+        <dataunit>test</dataunit>
+        <driver>at.ac.tuwien.infosys.jcloudscale.datastore.driver.couchdb.CouchDBDriver</driver>
+        <libs>
+            <lib>
+                <lib-name>lightcouch</lib-name>
+                <lib-wrapper>at.ac.tuwien.infosys.jcloudscale.datastore.ext.LightCouchWrapper</lib-wrapper>
+            </lib>
+        </libs>
+    </datastore>
+
+    <datastore>
+        <name>hbase</name>
+        <host>192.168.56.101</host>
+        <driver>at.ac.tuwien.infosys.jcloudscale.datastore.driver.hbase.HbaseDriver</driver>
+    </datastore>
+</datastores>

@@ -1,0 +1,9 @@
+# a CS-CLI script is really just a list of commands executed one after the other
+
+demo
+start-mq
+new 5
+exit
+connect localhost
+ls-co
+ls-ch

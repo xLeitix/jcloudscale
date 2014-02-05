@@ -1,0 +1,168 @@
+ExxonMobil
+Shell
+Walmart
+BP
+Vitol
+Sinopec
+Chevron
+Phillips
+Toyota
+State Grid Corporation of China
+PetroChina
+Volkswagen
+Glencore
+Saudi Aramco
+Gazprom
+Fannie Mae
+General Motors
+General Electric
+Carrefour
+Petrobras
+Berkshire Hathaway
+Samsung Electronics
+Allianz
+Daimler
+Ford
+Eni
+Hewlett-Packard
+AT&T
+Nippon
+Assicurazioni Generali
+Cargill
+E.ON
+JX Holdings
+GDF Suez
+AXA
+Hitachi
+Bank of America
+Tesco
+Freddie Mac
+Apple
+Honda
+Verizon
+Nissan
+Panasonic
+Nestle
+LUKoil
+Pemex
+JPMorgan Chase
+Cardinal Health
+Koch Industries
+Petroleos de Venezuela
+IBM
+Siemens
+Hyundai
+Enel
+Lloyds
+UnitedHealth 
+Rosneft
+Statoil
+Metro
+Aviva
+BMW
+Costco
+Citigroup
+Sony
+BASF
+Wells Fargo
+Kuwait Petroleum
+Deutsche Telekom
+Procter & Gamble
+ICBC
+Valero Energy
+Lidl
+Kroger
+Nippon Life Insurance
+Telefonica
+Repsol YPF
+Archer Daniels Midland
+AmerisourceBergen
+HSBC
+SK Group
+National Iranian Oil Company
+Trafigura
+ArcelorMittal
+American International Group
+Toshiba
+Petronas
+Indian Oil Corporation
+Itau Unibanco
+Fiat
+ZEN-NOH
+Peugeot
+Vodafone
+Marathon Oil
+China Mobile
+Prudential plc
+ING Group
+Banco do Brasil
+Walgreens
+Deutsche Post
+BHP Billiton
+RWE
+Aegon
+REWE Group
+Dexia
+Aldi
+Microsoft
+China Railway
+Toyota
+Pfizer
+Philip Morris
+Groupe BPCE
+Target Corporation
+Temasek Holdings
+Medco Health Solutions
+United States Postal Service
+Gunvor
+Credit Agricole
+Tokyo Electric Power
+Boeing
+Barclays Bank
+State Farm Insurance
+Bosch
+Sonatrach
+Royal Bank
+Mitsubishi Corporation
+Johnson & Johnson
+Dell
+EADS
+Munich Re
+Vale
+France Telecom
+WellPoint
+Wesfarmers
+Rio Tinto
+CNP Assurances
+Reliance Industries
+Legal & General
+Bank of China
+Unilever
+BNP Paribas
+China Life Insurance
+Woolworths Limited
+Edeka Group
+PepsiCo
+Grupo Santander
+Auchan
+Noble
+Mitsui
+Banco Bradesco
+Dongfeng Motor
+Deutsche Bank
+SAIC Motor
+Comcast
+Fujitsu
+Dow Chemical
+Saint-Gobain
+UniCredit
+Nokia
+POSCO
+United Parcel Service
+MetLife
+Renault
+Mitsubishi
+ThyssenKrupp
+Sinochem
+Novartis
+Best Buy

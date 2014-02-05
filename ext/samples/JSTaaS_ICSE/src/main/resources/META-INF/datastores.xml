@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<datastores>
+    <datastore>
+        <name>testresults</name>
+        <host>localhost</host>
+        <port>5984</port>
+        <dataunit>testresults</dataunit>
+        <driver>at.ac.tuwien.infosys.jcloudscale.datastore.driver.couchdb.CouchDBDriver</driver>
+    </datastore>
+</datastores>

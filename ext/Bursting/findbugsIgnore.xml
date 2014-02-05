@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+	
+	<!-- They appear whenever we return or acquire any complex and store it to private filed. I think that this issue should be disabled at all. -->
+	<Match>
+		<Bug pattern="EI_EXPOSE_REP, EI_EXPOSE_REP2" />
+	</Match>
+	
+</FindBugsFilter>
