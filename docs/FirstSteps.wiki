@@ -2,29 +2,23 @@
 
 If you want to experiment with the code itself, you can check out the code via:
 
-<code>
  git clone https://github.com/xLeitix/jcloudscale.git
-</code>
 
 Make sure to have Git, Java 7 and Maven 3 installed.
 
 You can run the end-to-end tests of JCloudScale via
 
-```
-mvn clean verify -P local-tests
-```
+ mvn clean verify -P local-tests
 
 Finally, a small sample application is also included. You can run it with the following command:
 
-```
-cd core; mvn clean install -Dskiptests; cd ..; cd ext/samples/SentimentAnalysis; mvn clean compile exec:exec
-```
+ cd core; mvn clean install -Dskiptests; cd ..; cd ext/samples/SentimentAnalysis; mvn clean compile exec:exec
 
 If you don't want to mess with the JCloudScale source code, following documentation explains how to work with the binaries using [http://maven.apache.org/ maven].
 
 = Introduction =
 
-If you want to try out JCloudScale with your own application and don't have time for [[Documentation.wiki | Documentation]], here's the illustrative example that shows complete JCloudScale integration process. Our example will be an application for prime numbers searching. The original ("un-cloudified") version of this application can be found at [[0.initialSampleApplication.zip | 0.initialSampleApplication]]. 
+If you want to try out JCloudScale with your own application and don't have time for [[Documentation.wiki| Documentation]], here's the illustrative example that shows complete JCloudScale integration process. Our example will be an application for prime numbers searching. The original ("un-cloudified") version of this application can be found at [[0.initialSampleApplication.zip| 0.initialSampleApplication]]. 
 
 This application represents a typical scalable application, which will allow us to demonstrate the main features and usage scenarios of the JCloudScale framework.
 The application is built with the [http://maven.apache.org/ Maven] ideology in mind, but can be run in [http://www.eclipse.org/  Eclipse] as well. The main goal of the application is to calculate the amount of prime numbers within a specified integer range. With the default configuration, the application is supposed to execute in less than 30 seconds on modern hardware, however you can play with it and configure running time to fit your needs or wishes. 
@@ -43,78 +37,76 @@ To be able to use any features of JCloudScale, we should apply some modification
 == Adding JCloudScale Dependency ==
 At first, we have to add the JCloudScale dependency. To do this, we open the project’s pom.xml file and insert the following code into the <code><dependencies></code> section. The position of this particular dependency does not matter for maven. Also you may need to change version to match the one you actually target:
 
-<code>
  <dependency>
  	<groupId>jcloudscale</groupId>
  	<artifactId>jcloudscale.core</artifactId>
  	<version>0.4.0</version>
  </dependency>
-</code>
 
 In addition, as JCloudScale is not registered in public maven repositories, you need to add a reference to the TU Wien Infosys maven repository to the root of the pom.xml file (not into <code><dependencies></code> section, but create a new <code><repositories></code> section):
-```xml
+
  <repositories>
  	<repository>
  		<id>infosys-repository</id>
  		<url>http://www.infosys.tuwien.ac.at/mvn</url>
  	</repository>
  </repositories>
-```
+
 Now you can try to build the project again and maven should download all necessary dependencies. As we did not change the code yet, application execution should not change. In case you have any problems, ensure that you have access to the repository (you can try to open the repository link in browser) and read carefully the error message that maven provided after the build.
 
 == Applying JCloudScale Aspects ==
 After we added necessary dependencies and ensured that everything still works, it’s time to configure AspectJ. As mentioned in the introduction, JCloudScale is using AspectJ to weave the appropriate cloud management code into the application. This happens as a separate weaving step after compilation of the actual application. To allow this, we have to add new plugin configuration to the <code><plugins></code> section within section <code><build></code>:
-```xml
-<plugin>
-	<groupId>org.codehaus.mojo</groupId>
-	<artifactId>aspectj-maven-plugin</artifactId>
-	<version>1.4</version>
-	<configuration>
-		<source>1.7</source>
-		<target>1.7</target>
-		<complianceLevel>1.7</complianceLevel>
-		<verbose>true</verbose>
-	</configuration>
-	<executions>
-		<execution>
-			<configuration>
-				<XnoInline>true</XnoInline>
-				<aspectLibraries>
-					<aspectLibrary>
-						<groupId>jcloudscale</groupId>
-						<artifactId>jcloudscale.core</artifactId>
-					</aspectLibrary>
-				</aspectLibraries>
-			</configuration>
-			<goals>
-				<goal>compile</goal>
-				<goal>test-compile</goal>
-			</goals>
-		</execution>
-	</executions>
-	<dependencies>
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjrt</artifactId>
-			<version>1.7.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjtools</artifactId>
-			<version>1.7.0</version>
-		</dependency>
-	</dependencies>
-</plugin>
-```
+
+ <plugin>
+ 	<groupId>org.codehaus.mojo</groupId>
+ 	<artifactId>aspectj-maven-plugin</artifactId>
+ 	<version>1.4</version>
+ 	<configuration>
+ 		<source>1.7</source>
+ 		<target>1.7</target>
+ 		<complianceLevel>1.7</complianceLevel>
+ 		<verbose>true</verbose>
+ 	</configuration>
+ 	<executions>
+ 		<execution>
+ 			<configuration>
+ 				<XnoInline>true</XnoInline>
+ 				<aspectLibraries>
+ 					<aspectLibrary>
+ 						<groupId>jcloudscale</groupId>
+ 						<artifactId>jcloudscale.core</artifactId>
+ 					</aspectLibrary>
+ 				</aspectLibraries>
+ 			</configuration>
+ 			<goals>
+ 				<goal>compile</goal>
+ 				<goal>test-compile</goal>
+ 			</goals>
+ 		</execution>
+ 	</executions>
+ 	<dependencies>
+ 		<dependency>
+ 			<groupId>org.aspectj</groupId>
+ 			<artifactId>aspectjrt</artifactId>
+ 			<version>1.7.0</version>
+ 		</dependency>
+ 		<dependency>
+ 			<groupId>org.aspectj</groupId>
+ 			<artifactId>aspectjtools</artifactId>
+ 			<version>1.7.0</version>
+ 		</dependency>
+ 	</dependencies>
+ </plugin>
+
 This section tells maven that at compile and test-compile stages it should process code with AspectJ and apply aspects defined into the library specified by the group id and artifact id.
 If you compile project again, execution should still be the same, but in addition there should appear new tasks <code>aspectj-maven-plugin:1.4:compile/test-compile</code> with some warnings of not-applied aspects. 
-This is everything we need to do before starting to use JCloudScale in our application. If you had some difficulties applying changes listed here, the complete source code as it should be after successfully performing all changes can be found in [[1.Introduction.zip | 1.Introduction]].
+This is everything we need to do before starting to use JCloudScale in our application. If you had some difficulties applying changes listed here, the complete source code as it should be after successfully performing all changes can be found in [[1.Introduction.zip| 1.Introduction]].
 
 = Step 2: Selecting Cloud Objects =
 
 At this point you should have all necessary maven configuration applied to start using JCloudScale and the project should still successfully run. However, still no actual change in the behavior of the application will occur, as we have not yet designated any cloud objects. Now we will start modifying the code of the application to start using JCloudScale.
 
-The whole scaling concept of JCloudScale works around the Cloud Objects: the instances of classes that do heavy work and are deployed on the cloud hosts. For more details, see [[Documentation#Basic_Usage | documentation]].
+The whole scaling concept of JCloudScale works around the Cloud Objects: the instances of classes that do heavy work and are deployed on the cloud hosts. For more details, see [[Documentation#Basic_Usage| documentation]].
 
 Selecting the right classes in your application to become Cloud Objects is very important. Keep in mind that Cloud Objects are very expensive to create and invoke. They may look like regular Java objects, but interacting with them from the rest of the application always requires remoting via the message bus.
 
@@ -128,7 +120,7 @@ public class SimpleSearcher implements ISearcher
 }
 ```
 
-Now all ''non-static method invocations'' to the instance of the class <code>MyCloudObject</code> will be redirected to the appropriate cloud host and executed there seamlessly for application. Details and limitations of this process are described in [[Documentation#Interacting_With_Cloud_Objects | documentation]].
+Now all ''non-static method invocations'' to the instance of the class <code>MyCloudObject</code> will be redirected to the appropriate cloud host and executed there seamlessly for application. Details and limitations of this process are described in [[Documentation#Interacting_With_Cloud_Objects| documentation]].
 
 In principle, this is everything we need to do to introduce all necessary cloud-related code to deploy this object to the cloud. However, to make it work properly and not cause any problems for our application, we need to add a few more annotations.
 
@@ -157,14 +149,14 @@ public static void main(String[] args)
 ```
 
 The last thing we should consider are parameters that are passed into the Cloud Object's method invocations and returned from them. These parameters can be delivered in two ways: '''By-Value''' (when the object is serialized and delivered to the other side, therefore creating the copy of this object there) or '''By-Reference''' (when only the proxy of the object is transferred and both sides can change the object simultaneously and observe results). (see 
-[[Documentation#Passing_Parameters_By-Value_and_By-Reference | documentation]] for details). By default, JCloudScale tries to mimic Java default behavior: passing by-value primitive types and passing by-reference all class types. However, this does not always correspond to the needs of the developers as passing by-reference introduces communication overhead to the application execution. 
+[[Documentation#Passing_Parameters_By-Value_and_By-Reference| documentation]] for details). By default, JCloudScale tries to mimic Java default behavior: passing by-value primitive types and passing by-reference all class types. However, this does not always correspond to the needs of the developers as passing by-reference introduces communication overhead to the application execution. 
 
 To influence JCloudScale defaults and pass some complex parameters by-value instead of by-reference approach, you can annotate your parameters in method execution with <code>@ByValueParameter</code> annotation:
 
 ```java
 SimpleSearcher(@ByValueParameter Range range)
 	{
-		if(range.getFrom() <= 0 || range.getTo() <= 0)
+		if(range.getFrom() <= 0|| range.getTo() <= 0)
 			throw new RuntimeException("Range contains negative or zero parameters.");
 		
 		this.range = range;
@@ -181,17 +173,17 @@ public class Range implements Serializable
   ...
 }
 ```
-'''Note''', that in this case cloud hosts will operate over the copy of the passed parameter and if they change passed object, they will have to provide it back to the client explicitly to see changes there. For more details see [[Documentation#Passing_Parameters_By-Value_and_By-Reference | documentation]]
+'''Note''', that in this case cloud hosts will operate over the copy of the passed parameter and if they change passed object, they will have to provide it back to the client explicitly to see changes there. For more details see [[Documentation#Passing_Parameters_By-Value_and_By-Reference| documentation]]
 
 '''Congratulations!''' Your application is now cloud-aware. However, for now, instead of using any real cloud, it creates a new Java Virtual Machine to simulate the new cloud host. This approach is called the "'''Local'''" mode of JCloudScale framework, and is used to test the behavior of your application locally before deploying it to the cloud.  As you should have noticed, the running time actually increased. This is caused by the added overhead needed to start virtual machines (one per object), deploy code there and synchronize execution. We will learn how to change the default mode of the JCloudScale framework to actually use the cloud in the following steps.
-The complete code that we should have at this point can be found in [[2.Cloudified.zip | 2.Cloudified]].
+The complete code that we should have at this point can be found in [[2.Cloudified.zip| 2.Cloudified]].
 
 = Step 3: JCloudScale Configuration =
 
 As you saw in the previous sections, using JCloudScale is pretty easy and does not require applying any sophisticated changes to your application. However, when you are not satisfied with the default behavior of JCloudScale, you should be able to change it to fit your needs. To do this, you have to change the default configuration of the JCloudScale framework.
 
 == Specifying configuration ==
-To be as flexible as possible and satisfy most of the users' needs, JCloudScale can be configured in a few different ways. For detailed explanation of different approaches, their benefits and limitations, see [[Documentation#JCloudScale_Configuration | documentation]].
+To be as flexible as possible and satisfy most of the users' needs, JCloudScale can be configured in a few different ways. For detailed explanation of different approaches, their benefits and limitations, see [[Documentation#JCloudScale_Configuration| documentation]].
 
 In our demo application, we will specify configuration by creating special configuration providing method in the <code>prime.Main</code> class:
 
@@ -233,7 +225,7 @@ You can change that behavior in the server logging configuration.
 
 == Scaling Policy ==
 
-To scale application according to our needs, we need to create a scaling policy. For our demo case it will be really simple one (similar to the <code>SingleHostScalingPolicy</code> from default JCloudScale policies set), but it will give us some reasonable information on when and how scaling policies are used. In your application you will need to write more sophisticated scaling policies. You can learn how to do this in appropriate [[Documentation#Writing_Scaling_Policies | documentation section]].
+To scale application according to our needs, we need to create a scaling policy. For our demo case it will be really simple one (similar to the <code>SingleHostScalingPolicy</code> from default JCloudScale policies set), but it will give us some reasonable information on when and how scaling policies are used. In your application you will need to write more sophisticated scaling policies. You can learn how to do this in appropriate [[Documentation#Writing_Scaling_Policies| documentation section]].
 
 ```java
 @XmlRootElement
@@ -282,15 +274,15 @@ new JCloudScaleConfigurationBuilder(
 	.build();
 ```
 
-When this configuration will be used, JCloudScale will operate on [http://www.openstack.org/ Open Stack] virtual machines instead of the local Java virtual machines. In more details this is described in [[Documentation#Local_vs._Cloud_Deployment | documentation]].
+When this configuration will be used, JCloudScale will operate on [http://www.openstack.org/ Open Stack] virtual machines instead of the local Java virtual machines. In more details this is described in [[Documentation#Local_vs._Cloud_Deployment| documentation]].
 
-The complete source with all discussed configuration-related changes can be found at [[3.Configured.zip | 3.Configured]].
+The complete source with all discussed configuration-related changes can be found at [[3.Configured.zip| 3.Configured]].
 
 = Using File Dependency =
 
-Let's extend our [[3.Configured.zip | completely configured application]] to work even faster. If you look through the code of <code>SimpleSearcher</code>, you will see that the method <code>isPrime()</code>, that is executed quite often, does pretty stupid job: verifies if the provided number is divisible by each odd number. However, it would make more sense to try dividing only on prime numbers. This leads us to the point when we need to have some sort of prime numbers cache within which we will verify each provided number. 
+Let's extend our [[3.Configured.zip| completely configured application]] to work even faster. If you look through the code of <code>SimpleSearcher</code>, you will see that the method <code>isPrime()</code>, that is executed quite often, does pretty stupid job: verifies if the provided number is divisible by each odd number. However, it would make more sense to try dividing only on prime numbers. This leads us to the point when we need to have some sort of prime numbers cache within which we will verify each provided number. 
 
-This prime numbers cache can be either calculated dynamically on the startup or loaded from some file. Let's go for the second approach, as it sounds more interesting. You can create cache file by modifying any version of our application (e.g.,[[0.initialSampleApplication.zip | 0.initialSampleApplication]]) to write each found number to some file (e.g., <code>primes.txt</code>). However, note that you should keep cache size reasonable, as otherwise searchers will have to load more numbers from cache than they actually need to generate.
+This prime numbers cache can be either calculated dynamically on the startup or loaded from some file. Let's go for the second approach, as it sounds more interesting. You can create cache file by modifying any version of our application (e.g.,[[0.initialSampleApplication.zip| 0.initialSampleApplication]]) to write each found number to some file (e.g., <code>primes.txt</code>). However, note that you should keep cache size reasonable, as otherwise searchers will have to load more numbers from cache than they actually need to generate.
 
 To implement this, let's create new class <code>CachedNumbersSearcher</code> that uses the cache of prime numbers instead of comparing to each odd number as <code>SimpleSearcher</code> does:
 ```java
@@ -383,7 +375,7 @@ protected boolean isPrime(long number)
 }
 ```
 
-Now we came to the main point of this section: in this class we're using an external file, while JCloudScale is completely unaware of that. This will lead to the problem that when this code will be executed on the cloud host, this file won't be available and application will fail with exception. To avoid this, we have to notify JCloudScale to "capture" additional file along with the code. To do this, we add <code>@FileDependency</code> as it is described in [[Documentation#File_Dependencies | documentation]].
+Now we came to the main point of this section: in this class we're using an external file, while JCloudScale is completely unaware of that. This will lead to the problem that when this code will be executed on the cloud host, this file won't be available and application will fail with exception. To avoid this, we have to notify JCloudScale to "capture" additional file along with the code. To do this, we add <code>@FileDependency</code> as it is described in [[Documentation#File_Dependencies| documentation]].
 ```java
 @CloudObject
 @FileDependency(files = {CachedNumbersSearcher.CACHE_FILE_NAME})
@@ -396,4 +388,4 @@ public class CachedNumbersSearcher extends SimpleSearcher
 
 Now the application can run successfully in any environment as the specified file will be provided along with the code.
 
-In case you had some difficulties, complete source code with these changes is available at [[3.ConfiguredWithFileDependency.zip | 3.ConfiguredWithFileDependency]]
+In case you had some difficulties, complete source code with these changes is available at [[3.ConfiguredWithFileDependency.zip| 3.ConfiguredWithFileDependency]]
