@@ -45,9 +45,9 @@ At first, we have to add the JCloudScale dependency. To do this, we open the pro
 
 <code>
  <dependency>
-	<groupId>jcloudscale</groupId>
-	<artifactId>jcloudscale.core</artifactId>
-	<version>0.4.0</version>
+ 	<groupId>jcloudscale</groupId>
+ 	<artifactId>jcloudscale.core</artifactId>
+ 	<version>0.4.0</version>
  </dependency>
 </code>
 
