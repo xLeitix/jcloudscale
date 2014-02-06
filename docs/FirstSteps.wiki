@@ -18,7 +18,7 @@ If you don't want to mess with the JCloudScale source code, following documentat
 
 = Introduction =
 
-If you want to try out JCloudScale with your own application and don't have time for [[Documentation.wiki| Documentation]], here's the illustrative example that shows complete JCloudScale integration process. Our example will be an application for prime numbers searching. The original ("un-cloudified") version of this application can be found at [https://github.com/xLeitix/jcloudscale/blob/master/docs/0.initialSampleApplication.zip| 0.initialSampleApplication]. 
+If you want to try out JCloudScale with your own application and don't have time for [[Documentation.wiki| Documentation]], here's the illustrative example that shows complete JCloudScale integration process. Our example will be an application for prime numbers searching. The original ("un-cloudified") version of this application can be found at [https://github.com/xLeitix/jcloudscale/blob/master/docs/0.initialSampleApplication.zip 0.initialSampleApplication]. 
 
 This application represents a typical scalable application, which will allow us to demonstrate the main features and usage scenarios of the JCloudScale framework.
 The application is built with the [http://maven.apache.org/ Maven] ideology in mind, but can be run in [http://www.eclipse.org/  Eclipse] as well. The main goal of the application is to calculate the amount of prime numbers within a specified integer range. With the default configuration, the application is supposed to execute in less than 30 seconds on modern hardware, however you can play with it and configure running time to fit your needs or wishes. 
@@ -151,7 +151,6 @@ To influence JCloudScale defaults and pass some complex parameters by-value inst
  	{
  		if(range.getFrom() <= 0|| range.getTo() <= 0)
  			throw new RuntimeException("Range contains negative or zero parameters.");
- 		
  		this.range = range;
  		this.result = 0;
  	}
@@ -268,15 +267,12 @@ This prime numbers cache can be either calculated dynamically on the startup or 
 
 To implement this, let's create new class <code>CachedNumbersSearcher</code> that uses the cache of prime numbers instead of comparing to each odd number as <code>SimpleSearcher</code> does:
 
- // Cached Numbers Searcher class
  @CloudObject
  public class CachedNumbersSearcher extends SimpleSearcher
  {
  	public static final String CACHE_FILE_NAME = "primes.txt";
- 	
  	private List<Long> cachedPrimes = null;
  	private long maxCachedPrime = 0L;
- 	
  	CachedNumbersSearcher(@ByValueParameter Range range) 
  	{
  		super(range);
@@ -296,10 +292,9 @@ Also we should not load cache in the constructor as current version of the JClou
  		File cacheFile = new File(CACHE_FILE_NAME);
  		if(!cacheFile.exists())
  			throw new FileNotFoundException("File "+CACHE_FILE_NAME+" was not found. CachedNumbersSearcher cannot continue");
- 		
  		cachedPrimes = new ArrayList<Long>();
  		maxCachedPrime = 0L;
- 		
+ 
  		try(Scanner scanner = new Scanner(cacheFile))
  		{
  			while(scanner.hasNextLong())
@@ -310,7 +305,7 @@ Also we should not load cache in the constructor as current version of the JClou
  					maxCachedPrime = nextPrime;
  			}
  		}
- 		
+ 
  		System.out.println("Loaded "+cachedPrimes.size()+" prime numbers.");
  	}
  	catch(IOException ex)
@@ -323,7 +318,7 @@ Also we should not load cache in the constructor as current version of the JClou
  {
  	if(cachedPrimes == null)
  		loadCache();
- 	
+ 
  	return cachedPrimes;
  }
 
@@ -334,7 +329,6 @@ Now, when we loaded the cache, we have to override isPrime method (don't forget 
  {
  	// calculating the maximum number we have to check
  	long max = (long)Math.floor(Math.sqrt(number));
- 	
  	// checking with the cached numbers
  	for(long i : getCache())
  	{
@@ -344,16 +338,16 @@ Now, when we loaded the cache, we have to override isPrime method (don't forget 
  		if(number % i == 0)
  			return false;
  	}
- 	
+ 
  	// if we checked already enough numbers, we're done
  	if(max < maxCachedPrime)
  		return true;
- 	
+ 
  	// otherwise we need to continue checking after biggest loaded prime number
  	for(long i = maxCachedPrime + 2; i < max; i+=2)
  		if(number % i == 0)
  			return false;
- 	
+ 
  	return true;
  }
 
