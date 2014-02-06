@@ -4,7 +4,7 @@ JCloudScale is a framework for deploying and managing applications in an '''Infr
 
 The basic architecture of many JCloudScale applications is depicted below.
 
-[[JCloudScaleModel.png]]
+[[JCloudScaleModel.png?raw=true]]
 
 == What Kind of Applications Can Profit from JCloudScale? ==
 
@@ -128,7 +128,7 @@ Using this cloud object in your code is simple. It is just like using any other 
 
 Note that this simple code snippet actually already triggers some serious back-and-forth between your client application and the remote host, as indicated by the control flow figure below.
 
-[[JCloudScaleMethodInvocationDiagram.png]]
+[[File:JCloudScaleMethodInvocationDiagram.png]]
 
 When using JCloudScale, you should also indicate when your application does not require JCloudScale anymore and can be shut down. To do this, you can use the <code>@JCloudScaleShutdown</code> annotation. After the execution of the method annotated with it, JCloudScale will insert necessary calls to gracefully destroy all remaining cloud objects and shutdown any additional infrastructure created by the framework to communicate with the remote hosts. 
 
@@ -338,7 +338,7 @@ To understand better what can be configured within the JCloudScale framework, he
 
 JCloudScale framework itself cannot detect how Cloud Objects should be mapped to the Cloud Hosts and how many hosts should be used. Hence, you should select or write a scaling policy that fits your needs. You can use predefined scaling policies from the package <code>at.ac.tuwien.infosys.jcloudscale.policy.sample</code>, but to get really the best performance and resource usage, you might need to write your own scaling policy that will decide which host to select based on the number of already running machines, size of the task, planned amount of machines, current load of each machine or some other rules that might be important for your application.
 
-To create your own scaling policy, you have to create a class that extends <code>at.ac.tuwien.infosys.jcloudscale.policy.AbstractScalingPolicy</code> class and provide an instance of this class to JCloudScale configuration (see [[Documentation#JCloudScale_Configuration]]).
+To create your own scaling policy, you have to create a class that extends <code>at.ac.tuwien.infosys.jcloudscale.policy.AbstractScalingPolicy</code> class and provide an instance of this class to JCloudScale configuration (see [[Documentation.wiki#JCloudScale_Configuration| how to configure JCloudScale]]).
 
  
  public abstract class AbstractScalingPolicy
@@ -367,7 +367,7 @@ To create your own scaling policy, you have to create a class that extends <code
 
 As you can see, you have to implement two methods that will allow JCloudScale to scale up and down. The first method, <code>selectHost</code> will be called on each Cloud Object creation and has to answer the question ''"Which host should this object be deployed to"''? It receives as parameters a descriptor of the new Cloud Object (containing unique ID of the cloud object, it's class, and proxy object that will be used to perform all invocations after object will be deployed to the cloud host) and reference to the cloud hosts' pool that allows to perform various manipulations with the set of available hosts (like, get available hosts, start new host or shutdown existing host). JCloudScale expects this method to return the reference to the cloud host that <code>newCloudObject</code> should be deployed on.
 
-Second method from this interface has slightly different semantics. As cloud providers usually have billing based on time periods (billing period, usually a hour) starting from the host startup time, JCloudScale allows user to scale down similarly. Whenever the new host is started, <code>scaleDown</code> method will be called periodically to determine if the host specified by <code>scaledHost</code> parameter should be scaled down now or not. If the user answers <code>true</code>, all objects running on this host will be destroyed and the host will be terminated (therefore, you should either never terminate hosts with objects running on them or never use objects deployed to this host after host termination). Scaling down method invocation interval can be configured within common section of configuration (see [[Documentation#JCloudScale_Configuration]]).
+Second method from this interface has slightly different semantics. As cloud providers usually have billing based on time periods (billing period, usually a hour) starting from the host startup time, JCloudScale allows user to scale down similarly. Whenever the new host is started, <code>scaleDown</code> method will be called periodically to determine if the host specified by <code>scaledHost</code> parameter should be scaled down now or not. If the user answers <code>true</code>, all objects running on this host will be destroyed and the host will be terminated (therefore, you should either never terminate hosts with objects running on them or never use objects deployed to this host after host termination). Scaling down method invocation interval can be configured within common section of configuration (see [[Documentation.wiki#JCloudScale_Configuration| how to configure JCloudScale]]).
 
 The decision in both methods should be based on the type of the object, expected operations on this object and current state of running cloud hosts. For each cloud host you have following information available:
 * '''Host ID''', that allows identifying host uniquely.
@@ -376,7 +376,7 @@ The decision in both methods should be based on the type of the object, expected
 * '''Last Request Time''', that specifies when was the last interaction with this host.
 * '''Online''', that allows you to determine if host is running. If this value is <code>false</code>, the host may be either still starting up or already shutting down. You can detect this by checking '''Startup Time''' value: if host did not start yet, this value will be empty.
 * '''Cloud Objects''', that allows you to count or iterate cloud objects that are currently deployed on this host.
-* '''Current CPU Load'''/'''Current RAM Usage''', that allow you to determine the last measurement of CPU and RAM usage on this host. To be able to use this values, you have to enable monitoring (see [[Documentation#JCloudScale_Configuration | configuration section]]). In addition, you should be aware that these values are not actual and show the last reported usage, what may different from the current values. The interval to measure these and other metrics can be configured within monitoring configuration as well.
+* '''Current CPU Load'''/'''Current RAM Usage''', that allow you to determine the last measurement of CPU and RAM usage on this host. To be able to use this values, you have to enable monitoring (see [[Documentation.wiki#JCloudScale_Configuration| configuration section]]). In addition, you should be aware that these values are not actual and show the last reported usage, what may different from the current values. The interval to measure these and other metrics can be configured within monitoring configuration as well.
 
 == Local vs. Cloud Deployment ==
 
@@ -388,17 +388,17 @@ Currently JCloudScale supports Openstack and Amazon EC2 as cloud deployment plat
 
 Before you can start using Openstack from JCloudScale-based application, you have to create virtual machine image that has an instance of JCloudScale Server of the same version running. Currently JCloudScale expects this image to be linux-based, however this restriction may be removed in future.
 
-To get such an image, either refer to our [[BuildingServerImages | tutorial on building server images]], or download our [http://www.infosys.tuwien.ac.at/staff/leitner/cloud_images/ pre-built image].
+To get such an image, either refer to our [[BuildingServerImages.wiki| tutorial on building server images]], or download our [http://www.infosys.tuwien.ac.at/staff/leitner/cloud_images/JCloudScale_v0.4.0.img pre-built image].
 
 If you don't want to specify the name or id of the created image in the application configuration explicitly, you have to name it accordingly to the JCloudScale conventions. If neither name nor id of the virtual machine image is specified, JCloudScale tries to find the image that is named <code>"JCloudScale"+"_v"+JCloudScaleConfiguration.CS_VERSION</code> (e.g., <code>JCloudScale_v0.4.0</code> if application is using JCloudScale with version 0.4.0).  Additionally, an Apache ActiveMQ instance needs to be available that is accessible both from the client as well as from cloud hosts. For production, you should install ActiveMQ on a separate host in the cloud. We do not provide a specific ActiveMQ image, as ActiveMQ can be easily installed on any Linux-based operating system, e.g., via apt-get in Debian-based distributions.
 
-In addition, to speedup application startup process, you can use '''static JCloudScale instances'''. Static instance is the virtual machine that has JCloudScale running and is started prior application startup. At startup, JCloudScale queries for running cloud hosts through message queue. Hosts that answered are used as static hosts. These instances will not be shut down on application termination unless application shuts down them explicitly. To start a new static host, you can use '''JCloudScale Static Host Management Tool''' that allows you to start and stop available static hosts. Note, that this tool requires a file with serialized configuration (see [[Documentation#JCloudScale_Configuration | configuration section]]) that will be used by your main application to configure static hosts accordingly.
+In addition, to speedup application startup process, you can use '''static JCloudScale instances'''. Static instance is the virtual machine that has JCloudScale running and is started prior application startup. At startup, JCloudScale queries for running cloud hosts through message queue. Hosts that answered are used as static hosts. These instances will not be shut down on application termination unless application shuts down them explicitly. To start a new static host, you can use '''JCloudScale Static Host Management Tool''' that allows you to start and stop available static hosts. Note, that this tool requires a file with serialized configuration (see [[Documentation.wiki#JCloudScale_Configuration| configuration section]]) that will be used by your main application to configure static hosts accordingly.
 
 '''Note''' that you do not need access to a real IaaS cloud for local deployment. However, clearly access credentials to an IaaS cloud are required as soon as you switch to cloud deployment.
 
 Further note that local deployment is '''not''' meant for production. Realistically, we cannot think of a good reason to ever write an application with JCloudScale if you do not intend to deploy it to an actual cloud. Local deployment is a tool to ease the development and testing process, and nothing more.
 
-Selecting the deployment mode is part of JCloudScale [[Documentation#JCloudScale_Configuration]]. Just selecting local deployment without further customization can be done as below.
+Selecting the deployment mode is part of JCloudScale [[Documentation.wiki#JCloudScale_Configuration| configuration]]. Just selecting local deployment without further customization can be done as below.
 
  new JCloudScaleConfigurationBuilder()
    .build();
@@ -455,7 +455,7 @@ To the largest extend, deployment in EC2 works exactly like explained above for 
  mq.address= THE_ADDRESS_OF_AN_ACTIVEMQ_INSTANCE
  # e.g.: mq.address = ec2-54-246-46-34.eu-west-1.compute.amazonaws.com
 
-Furthermore, an AMI that implements the JCloudScale server component is required. For version 0.2.0, you can use the public image <code>ami-eac5209d</code> in EC2. Alternatively, you can easily build your own image based on our [[BuildingServerImages tutorial]].
+Furthermore, an AMI that implements the JCloudScale server component is required. For version 0.2.0, you can use the public image <code>ami-eac5209d</code> in EC2. Alternatively, you can easily build your own image based on our [[BuildingServerImages.wiki| this tutorial]].
 
  new JCloudScaleConfigurationBuilder(
  	new EC2CloudPlatformConfiguration()
@@ -469,7 +469,7 @@ Furthermore, an AMI that implements the JCloudScale server component is required
 
 = Event-Based Monitoring =
 
-Writing useful scaling policies is often the hardest part of building your JCloudScale application. For simple policies, users can use the information provided directly through the API, as discussed in [[Documentation#Writing''Scaling''Policies]]. However, oftentimes, users may want to scale based on data that is more application-specific than CPU or RAM utilization (for instance based on the number of violations of Service Level Agreements on each host). Such use cases are covered by JCloudScale's event-based monitoring interface.
+Writing useful scaling policies is often the hardest part of building your JCloudScale application. For simple policies, users can use the information provided directly through the API, as discussed in [[Documentation.wiki#writing-scaling-policies| Scaling Policies]] documentation section. However, oftentimes, users may want to scale based on data that is more application-specific than CPU or RAM utilization (for instance based on the number of violations of Service Level Agreements on each host). Such use cases are covered by JCloudScale's event-based monitoring interface.
 
 JCloudScale integrates a powerful [http://esper.codehaus.org/ Esper]-based complex event processing (CEP) engine. Via Esper, useful metrics can be defined as CEP statements on streams of monitoring data produced by JCloudScale and the cloud objects.
 
@@ -614,7 +614,7 @@ To inform JCloudScale that this class has some additional file dependencies, <co
 
 Files that should be deployed to the cloud host can be specified in 2 different ways. 
 
-# In case the set of files is fixed and known prior to application compilation, they can be enumerated inside the annotation:
+1. In case the set of files is fixed and known prior to application compilation, they can be enumerated inside the annotation:
 
  @FileDependency(files = {"1.txt", "resources/2.txt", "files/3.txt"})
  public class ClassWithDependencies 
@@ -622,7 +622,7 @@ Files that should be deployed to the cloud host can be specified in 2 different 
    ...
  }
 
-# If the set of files that should be loaded is not known on the application compilation time or developer would prefer to populate this list dynamically, dependency provider approach can be used. To use this approach, <code>@FileDependency</code> annotation's property <code>dependencyProvider</code> should be initialized with the class that implements <code>IFileDependencyProvider</code> and provides the set of files necessary to the annotated class:
+2. If the set of files that should be loaded is not known on the application compilation time or developer would prefer to populate this list dynamically, dependency provider approach can be used. To use this approach, <code>@FileDependency</code> annotation's property <code>dependencyProvider</code> should be initialized with the class that implements <code>IFileDependencyProvider</code> and provides the set of files necessary to the annotated class:
 
  
  @FileDependency(dependencyProvider= MyDependencyProvider.class)
@@ -631,7 +631,7 @@ Files that should be deployed to the cloud host can be specified in 2 different 
    ...
  }
  
- public static class MyDependencyProvider implements IFileDependencyProvider 
+ public class MyDependencyProvider implements IFileDependencyProvider 
  {
  	@Override
  	public DependentFile[] getDependentFiles() 
@@ -741,7 +741,7 @@ The CLI is a prompt which currently supports the following commands:
 
 * <code>exit</code> - close the prompt.
 
- jcloudscale> close
+ jcloudscale> exit
 
 * <code>?list</code> - list all available commands.
 
@@ -773,7 +773,7 @@ The CLI is a prompt which currently supports the following commands:
 
 = Data Store Integration =
 
-The current version of JCloudScale also includes a custom library for mapping Java objects to NoSQL data stores (among other features). Brief initial documentation of these features can be found in a separate [[DatastoreAPI | WIKI page]]. As the data store library is an extension component, you will need to add another dependency to your build:
+The current version of JCloudScale also includes a custom library for mapping Java objects to NoSQL data stores (among other features). Brief initial documentation of these features can be found in a separate [[DatastoreAPI.wiki| WIKI page]]. As the data store library is an extension component, you will need to add another dependency to your build:
 
  <dependency>
    <groupId>jcloudscale</groupId>
@@ -798,25 +798,25 @@ In this table, you can find all annotations used by JCloudScale and a brief expl
 !'''Legal On'''
 !'''Summary'''
 |-
-| <code>@ByValueParameter</code> || Serializable method parameters, return values, fields and types || Indicates parameters and fields that should be transferred using by-value semantics.
+| <code>@ByValueParameter</code>|| Serializable method parameters, return values, fields and types|| Indicates parameters and fields that should be transferred using by-value semantics.
 |-
-| <code>@CloudGlobal</code> || Static fields || Indicates that the value of a static field should be kept consistent among all cloud hosts.
+| <code>@CloudGlobal</code>|| Static fields|| Indicates that the value of a static field should be kept consistent among all cloud hosts.
 |-
-| <code>@CloudObject</code> || Types || Denotes cloud objects.
+| <code>@CloudObject</code>|| Types|| Denotes cloud objects.
 |-
-| <code>@CloudObjectId</code> || Fields of type <code>String</code> or <code>UUID</code> in cloud objects || Dependency injection annotation, fields annotated with this will get injected with the unique identifier of this cloud object.
+| <code>@CloudObjectId</code>|| Fields of type <code>String</code> or <code>UUID</code> in cloud objects|| Dependency injection annotation, fields annotated with this will get injected with the unique identifier of this cloud object.
 |-
-| <code>@CloudObjectParent</code> || Types || Subclasses of this object are cloud objects (but this object is not).
+| <code>@CloudObjectParent</code>|| Types|| Subclasses of this object are cloud objects (but this object is not).
 |-
-| <code>@JCloudScaleConfigurationProvider</code> || Static parameterless methods || This method can be used to provide a configuration object for JCloudScale.
+| <code>@JCloudScaleConfigurationProvider</code>|| Static parameterless methods|| This method can be used to provide a configuration object for JCloudScale.
 |-
-| <code>@JCloudScaleShutdown</code> || Methods || JCloudScale is terminated after this method has finished successfully.
+| <code>@JCloudScaleShutdown</code>|| Methods|| JCloudScale is terminated after this method has finished successfully.
 |-
-| <code>@DestructCloudObject</code> || Methods of cloud objects || This cloud object instance is destroyed after this method has finished successfully.
+| <code>@DestructCloudObject</code>|| Methods of cloud objects|| This cloud object instance is destroyed after this method has finished successfully.
 |-
-| <code>@EventSink</code> || Fields of cloud objects || Dependency injection annotation, fields annotated with this will get injected with an event sink that cloud objects can use to write custom events to.
+| <code>@EventSink</code>|| Fields of cloud objects|| Dependency injection annotation, fields annotated with this will get injected with an event sink that cloud objects can use to write custom events to.
 |-
-| <code>@FileDependency</code> || Types || Tells the remote classloader that this class depends on specific files, which need to be loaded along with the class.
+| <code>@FileDependency</code>|| Types|| Tells the remote classloader that this class depends on specific files, which need to be loaded along with the class.
 |-
-| <code>@Local</code> || Constructors of cloud objects || Used to demarcate constructors of cloud objects which should not be intercepted (used to instantiate local instances of cloud objects).
+| <code>@Local</code>|| Constructors of cloud objects|| Used to demarcate constructors of cloud objects which should not be intercepted (used to instantiate local instances of cloud objects).
 |}

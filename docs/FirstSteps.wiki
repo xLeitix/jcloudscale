@@ -18,7 +18,7 @@ If you don't want to mess with the JCloudScale source code, following documentat
 
 = Introduction =
 
-If you want to try out JCloudScale with your own application and don't have time for [[Documentation.wiki| Documentation]], here's the illustrative example that shows complete JCloudScale integration process. Our example will be an application for prime numbers searching. The original ("un-cloudified") version of this application can be found at [[0.initialSampleApplication.zip| 0.initialSampleApplication]]. 
+If you want to try out JCloudScale with your own application and don't have time for [[Documentation.wiki| Documentation]], here's the illustrative example that shows complete JCloudScale integration process. Our example will be an application for prime numbers searching. The original ("un-cloudified") version of this application can be found at [[0.initialSampleApplication.zip?raw=true| 0.initialSampleApplication]]. 
 
 This application represents a typical scalable application, which will allow us to demonstrate the main features and usage scenarios of the JCloudScale framework.
 The application is built with the [http://maven.apache.org/ Maven] ideology in mind, but can be run in [http://www.eclipse.org/  Eclipse] as well. The main goal of the application is to calculate the amount of prime numbers within a specified integer range. With the default configuration, the application is supposed to execute in less than 30 seconds on modern hardware, however you can play with it and configure running time to fit your needs or wishes. 
@@ -178,12 +178,12 @@ To be as flexible as possible and satisfy most of the users' needs, JCloudScale 
 In our demo application, we will specify configuration by creating special configuration providing method in the <code>prime.Main</code> class:
 
  @JCloudScaleConfigurationProvider
- 	public static JCloudScaleConfiguration getConfiguration()
- 	{
- 		return new JCloudScaleConfigurationBuilder()
- 		                .withLogging(Level.SEVERE)
- 				.build();
- 	}
+ public static JCloudScaleConfiguration getConfiguration()
+ {
+ 	return new JCloudScaleConfigurationBuilder()
+ 					.withLogging(Level.SEVERE)
+ 			.build();
+ }
 
 To make JCloudScale use this method, we will change application startup declared in <code>pom.xml</code> file as following:
 
