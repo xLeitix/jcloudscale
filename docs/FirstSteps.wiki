@@ -3,7 +3,7 @@
 If you want to experiment with the code itself, you can check out the code via:
 
 <code>
-git clone https://github.com/xLeitix/jcloudscale.git
+ git clone https://github.com/xLeitix/jcloudscale.git
 </code>
 
 Make sure to have Git, Java 7 and Maven 3 installed.
@@ -44,21 +44,21 @@ To be able to use any features of JCloudScale, we should apply some modification
 At first, we have to add the JCloudScale dependency. To do this, we open the project’s pom.xml file and insert the following code into the <code><dependencies></code> section. The position of this particular dependency does not matter for maven. Also you may need to change version to match the one you actually target:
 
 <code>
-<dependency>
+ <dependency>
 	<groupId>jcloudscale</groupId>
 	<artifactId>jcloudscale.core</artifactId>
 	<version>0.4.0</version>
-</dependency>
+ </dependency>
 </code>
 
 In addition, as JCloudScale is not registered in public maven repositories, you need to add a reference to the TU Wien Infosys maven repository to the root of the pom.xml file (not into <code><dependencies></code> section, but create a new <code><repositories></code> section):
 ```xml
-<repositories>
-	<repository>
-		<id>infosys-repository</id>
-		<url>http://www.infosys.tuwien.ac.at/mvn</url>
-	</repository>
-</repositories>
+ <repositories>
+ 	<repository>
+ 		<id>infosys-repository</id>
+ 		<url>http://www.infosys.tuwien.ac.at/mvn</url>
+ 	</repository>
+ </repositories>
 ```
 Now you can try to build the project again and maven should download all necessary dependencies. As we did not change the code yet, application execution should not change. In case you have any problems, ensure that you have access to the repository (you can try to open the repository link in browser) and read carefully the error message that maven provided after the build.
 
