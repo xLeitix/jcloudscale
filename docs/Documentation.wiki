@@ -33,7 +33,7 @@ Please find the automatically generated API documentation for JCloudScale [http:
 
 == Current Version ==
 
-The most current version of JCloudScale is currently '''0.4.0-SNAPSHOT'''.  This version is available in binary as a nightly build from our Maven repository. However, the source code here in GitHub is not necessarily exactly the same as '''0.4.0-SNAPSHOT'''. If you want to use exactly the binary that you see in source here, either build the source yourself or use the stable release version '''0.4.0'''.
+This documentation describes the latest stable JCloudScale release '''0.4.0'''. As we are continuing working on this project, latest version can be found in our [http://www.infosys.tuwien.ac.at/mvn/jcloudscale/ maven repository]. Note, however, that it does not necessarily has the same API and behavior may differ from the one described here.
 
 = Basic Usage =
 
