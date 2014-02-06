@@ -18,7 +18,7 @@ If you don't want to mess with the JCloudScale source code, following documentat
 
 = Introduction =
 
-If you want to try out JCloudScale with your own application and don't have time for [[Documentation.wiki| Documentation]], here's the illustrative example that shows complete JCloudScale integration process. Our example will be an application for prime numbers searching. The original ("un-cloudified") version of this application can be found at [https://github.com/xLeitix/jcloudscale/blob/master/docs/0.initialSampleApplication.zip 0.initialSampleApplication]. 
+If you want to try out JCloudScale with your own application and don't have time for [[Documentation.wiki| Documentation]], here's the illustrative example that shows complete JCloudScale integration process. Our example will be an application for prime numbers searching. The original ("un-cloudified") version of this application can be found at [[0.initialSampleApplication.zip| 0.initialSampleApplication]]. 
 
 This application represents a typical scalable application, which will allow us to demonstrate the main features and usage scenarios of the JCloudScale framework.
 The application is built with the [http://maven.apache.org/ Maven] ideology in mind, but can be run in [http://www.eclipse.org/  Eclipse] as well. The main goal of the application is to calculate the amount of prime numbers within a specified integer range. With the default configuration, the application is supposed to execute in less than 30 seconds on modern hardware, however you can play with it and configure running time to fit your needs or wishes. 
@@ -277,7 +277,6 @@ To implement this, let's create new class <code>CachedNumbersSearcher</code> tha
  	{
  		super(range);
  	}
- 
   ...
  }
 
@@ -294,7 +293,6 @@ Also we should not load cache in the constructor as current version of the JClou
  			throw new FileNotFoundException("File "+CACHE_FILE_NAME+" was not found. CachedNumbersSearcher cannot continue");
  		cachedPrimes = new ArrayList<Long>();
  		maxCachedPrime = 0L;
- 
  		try(Scanner scanner = new Scanner(cacheFile))
  		{
  			while(scanner.hasNextLong())
@@ -323,7 +321,7 @@ Also we should not load cache in the constructor as current version of the JClou
  }
 
 Now, when we loaded the cache, we have to override isPrime method (don't forget to change visibility from <code>private</code> to <code>protected</code> in parent class). Also don't forget to change <code>SearcherFactory</code> to return new searcher we created.
-
+ 
  @Override
  protected boolean isPrime(long number) 
  {
@@ -334,7 +332,6 @@ Now, when we loaded the cache, we have to override isPrime method (don't forget 
  	{
  		if(i > max)
  			break;
- 		
  		if(number % i == 0)
  			return false;
  	}
