@@ -18,7 +18,7 @@ If you don't want to mess with the JCloudScale source code, following documentat
 
 = Introduction =
 
-If you want to try out JCloudScale with your own application and don't have time for [[Documentation.wiki| Documentation]], here's the illustrative example that shows complete JCloudScale integration process. Our example will be an application for prime numbers searching. The original ("un-cloudified") version of this application can be found at [[0.initialSampleApplication.zip| 0.initialSampleApplication]]. 
+If you want to try out JCloudScale with your own application and don't have time for [[Documentation.wiki| Documentation]], here's the illustrative example that shows complete JCloudScale integration process. Our example will be an application for prime numbers searching. The original ("un-cloudified") version of this application can be found at [0.initialSampleApplication.zip| 0.initialSampleApplication]. 
 
 This application represents a typical scalable application, which will allow us to demonstrate the main features and usage scenarios of the JCloudScale framework.
 The application is built with the [http://maven.apache.org/ Maven] ideology in mind, but can be run in [http://www.eclipse.org/  Eclipse] as well. The main goal of the application is to calculate the amount of prime numbers within a specified integer range. With the default configuration, the application is supposed to execute in less than 30 seconds on modern hardware, however you can play with it and configure running time to fit your needs or wishes. 
@@ -112,13 +112,11 @@ Selecting the right classes in your application to become Cloud Objects is very 
 
 In case of our sample application it is easy to see that the searcher class (<code>SimpleSearcher</code>) looks like a perfect candidate to become a Cloud Object. It has only 2 public methods, one of which is computation-intensive, it does not rely on any additional dependencies and depends only on 3 files within the same package (<code>ISearcher</code>, <code>SimpleSearcher</code> and <code>Range</code>). Therefore, we are going to declare this class a Cloud Object. To do this, we add the <code>@CloudObject</code> annotation on top of <code>SimpleSearcher</code> class:
 
-```java
-@CloudObject
-public class SimpleSearcher implements ISearcher
-{
-	...
-}
-```
+ @CloudObject
+ public class SimpleSearcher implements ISearcher
+ { 
+ 	...
+ }
 
 Now all ''non-static method invocations'' to the instance of the class <code>MyCloudObject</code> will be redirected to the appropriate cloud host and executed there seamlessly for application. Details and limitations of this process are described in [[Documentation#Interacting_With_Cloud_Objects| documentation]].
 
@@ -126,53 +124,46 @@ In principle, this is everything we need to do to introduce all necessary cloud-
 
 One important thing we should care about is the life time of the Cloud Object on the cloud host: in case you want to control the life of the Cloud Objects on the cloud hosts, you should annotate some method that will be the last one you call on the Cloud Object with <code>@DestructCloudObject</code> annotation. After the invocation of this method, the cloud host will be informed that this Cloud Object can be destroyed. In the case of our demo application, <code>getResult()</code> can be used as such a method. Hence, we annotate it as following:
 
-```java
-@DestructCloudObject
-@Override
-public long getResult() 
-{
-	return result;
-}
-```
+ @DestructCloudObject
+ @Override
+ public long getResult() 
+ {
+ 	return result;
+ }
 
 In addition to specifying when Cloud Objects should be destroyed, we have to specify when the JCloudScale infrastructure won’t be needed any more and can be shut down. To do this, you can use the <code>@JCloudScaleShutdown</code> annotation. After the execution of the method annotated with it, JCloudScale will insert necessary calls to gracefully destroy all Cloud Objects and shutdown any additional infrastructure created by the framework to communicate with the cloud hosts.
 
 In our demo application we can see that the whole application execution is within the static main method from the <code>prime.Main</code> class. We can annotate this method with the <code>@JCloudScaleShutdown</code> annotation, which will cause JCloudScale to release all resources and close all connections at the moment we exit from the main method. In your application, however, you can annotate any method that marks the point when JCloudScale is no longer needed or application is going to shut down. You can even create an empty method that you will call only to shut down JCloudScale.
 
-```java
-@JCloudScaleShutdown
-public static void main(String[] args) 
-{
-	System.out.println("Starting...");
-	...
-}
-```
+ @JCloudScaleShutdown
+ public static void main(String[] args) 
+ {
+ 	System.out.println("Starting...");
+ 	...
+ }
 
 The last thing we should consider are parameters that are passed into the Cloud Object's method invocations and returned from them. These parameters can be delivered in two ways: '''By-Value''' (when the object is serialized and delivered to the other side, therefore creating the copy of this object there) or '''By-Reference''' (when only the proxy of the object is transferred and both sides can change the object simultaneously and observe results). (see 
 [[Documentation#Passing_Parameters_By-Value_and_By-Reference| documentation]] for details). By default, JCloudScale tries to mimic Java default behavior: passing by-value primitive types and passing by-reference all class types. However, this does not always correspond to the needs of the developers as passing by-reference introduces communication overhead to the application execution. 
 
 To influence JCloudScale defaults and pass some complex parameters by-value instead of by-reference approach, you can annotate your parameters in method execution with <code>@ByValueParameter</code> annotation:
 
-```java
-SimpleSearcher(@ByValueParameter Range range)
-	{
-		if(range.getFrom() <= 0|| range.getTo() <= 0)
-			throw new RuntimeException("Range contains negative or zero parameters.");
-		
-		this.range = range;
-		this.result = 0;
-	}
-```
+ SimpleSearcher(@ByValueParameter Range range)
+ 	{
+ 		if(range.getFrom() <= 0|| range.getTo() <= 0)
+ 			throw new RuntimeException("Range contains negative or zero parameters.");
+ 		
+ 		this.range = range;
+ 		this.result = 0;
+ 	}
 
 Or annotate the type itself to always pass it by value. 
 
-```java
-@ByValueParameter
-public class Range implements Serializable
-{
-  ...
-}
-```
+ @ByValueParameter
+ public class Range implements Serializable
+ {
+   ...
+ }
+
 '''Note''', that in this case cloud hosts will operate over the copy of the passed parameter and if they change passed object, they will have to provide it back to the client explicitly to see changes there. For more details see [[Documentation#Passing_Parameters_By-Value_and_By-Reference| documentation]]
 
 '''Congratulations!''' Your application is now cloud-aware. However, for now, instead of using any real cloud, it creates a new Java Virtual Machine to simulate the new cloud host. This approach is called the "'''Local'''" mode of JCloudScale framework, and is used to test the behavior of your application locally before deploying it to the cloud.  As you should have noticed, the running time actually increased. This is caused by the added overhead needed to start virtual machines (one per object), deploy code there and synchronize execution. We will learn how to change the default mode of the JCloudScale framework to actually use the cloud in the following steps.
@@ -187,29 +178,25 @@ To be as flexible as possible and satisfy most of the users' needs, JCloudScale 
 
 In our demo application, we will specify configuration by creating special configuration providing method in the <code>prime.Main</code> class:
 
-```java
-@JCloudScaleConfigurationProvider
-	public static JCloudScaleConfiguration getConfiguration()
-	{
-		return new JCloudScaleConfigurationBuilder()
-		                .withLogging(Level.SEVERE)
-				.build();
-	}
-```
+ @JCloudScaleConfigurationProvider
+ 	public static JCloudScaleConfiguration getConfiguration()
+ 	{
+ 		return new JCloudScaleConfigurationBuilder()
+ 		                .withLogging(Level.SEVERE)
+ 				.build();
+ 	}
 
 To make JCloudScale use this method, we will change application startup declared in <code>pom.xml</code> file as following:
 
-```xml
-<configuration>
-	<executable>java</executable>
-	<arguments>
-		<argument>-Djcloudscale.configuration=prime.Main</argument>
-		<argument>-classpath</argument>
-		<classpath />
-		<argument>prime.Main</argument>
-	</arguments>
-</configuration>
-```
+ <configuration>
+ 	<executable>java</executable>
+ 	<arguments>
+ 		<argument>-Djcloudscale.configuration=prime.Main</argument>
+ 		<argument>-classpath</argument>
+ 		<classpath />
+ 		<argument>prime.Main</argument>
+ 	</arguments>
+ </configuration>
 
 Now whenever JCloudScale will need configuration, it will check system property <code>jcloudscale.configuration</code> and load it from the class specified there.
 
@@ -217,9 +204,7 @@ Now whenever JCloudScale will need configuration, it will check system property 
 
 Logging is the easiest way to monitor the state of the running application and detect errors. However, when you're starting to use JCloudScale in your application, you don't have to do anything for output and logging redirection. To receive the output of your own code, you don’t have to use JCloudScale logging infrastructure: by default, JCloudScale redirects all standard and error output to the client application. Therefore, if you add some output to standard or error stream from Cloud Object (<code>SimpleSearcher</code>), you should see it during execution as if it was printed locally (prefixed with the IP address of the host actually executing this object):
 
-```java
-System.out.println("#### In "+range+" found "+ result +" prime numbers.####");
-```
+ System.out.println("#### In "+range+" found "+ result +" prime numbers.####");
 
 You can change that behavior in the server logging configuration.
 
@@ -227,52 +212,48 @@ You can change that behavior in the server logging configuration.
 
 To scale application according to our needs, we need to create a scaling policy. For our demo case it will be really simple one (similar to the <code>SingleHostScalingPolicy</code> from default JCloudScale policies set), but it will give us some reasonable information on when and how scaling policies are used. In your application you will need to write more sophisticated scaling policies. You can learn how to do this in appropriate [[Documentation#Writing_Scaling_Policies| documentation section]].
 
-```java
-@XmlRootElement
-public class MyScalingPolicy extends AbstractScalingPolicy {
-
-	// The method is synchronized to avoid race conditions between different cloud objects 
-	// being scheduled for execution at the same time.
-	@Override
-	public synchronized IHost selectHost(ClientCloudObject newCloudObject, IHostPool hostPool) {
-		if(hostPool.getHostsCount() > 0)
-		{
-			IHost selectedHost = hostPool.getHosts().iterator().next();
-			System.out.println("SCALING: Deploying new object "+ 
-								newCloudObject.getCloudObjectClass().getName() +
-								" on "+selectedHost.getId());
-			
-			return selectedHost;
-		}
-		else
-		{
-			System.out.println("SCALING: Deploying new object "+
-									newCloudObject.getCloudObjectClass().getName() +
-									" on new virtual machine.");
-			// Here we return a host started asynchronously to minimize time inside synchronized section.
-			return hostPool.startNewHostAsync();
-		}
-	}
-
-	@Override
-	public boolean scaleDown(IHost scaledHost, IHostPool hostPool) {
-		// We will not scale down for this sample application as 
-		// JCloudScale will shut down all hosts at the end, but you may need that.
-		return false;
-	}
-}
-```
+ @XmlRootElement
+ public class MyScalingPolicy extends AbstractScalingPolicy {
+ 
+ 	// The method is synchronized to avoid race conditions between different cloud objects 
+ 	// being scheduled for execution at the same time.
+ 	@Override
+ 	public synchronized IHost selectHost(ClientCloudObject newCloudObject, IHostPool hostPool) {
+ 		if(hostPool.getHostsCount() > 0)
+ 		{
+ 			IHost selectedHost = hostPool.getHosts().iterator().next();
+ 			System.out.println("SCALING: Deploying new object "+ 
+ 								newCloudObject.getCloudObjectClass().getName() +
+ 								" on "+selectedHost.getId());
+ 			
+ 			return selectedHost;
+ 		}
+ 		else
+ 		{
+ 			System.out.println("SCALING: Deploying new object "+
+ 									newCloudObject.getCloudObjectClass().getName() +
+ 									" on new virtual machine.");
+ 			// Here we return a host started asynchronously to minimize time inside synchronized section.
+ 			return hostPool.startNewHostAsync();
+ 		}
+ 	}
+ 
+ 	@Override
+ 	public boolean scaleDown(IHost scaledHost, IHostPool hostPool) {
+ 		// We will not scale down for this sample application as 
+ 		// JCloudScale will shut down all hosts at the end, but you may need that.
+ 		return false;
+ 	}
+} 
 
 == Cloud Platform Selection ==
 
 For this sample application, we will limit ourselves with '''Local''' JCloudScale mode, while you may try to extend this application to use the actual cloud machines from your cloud. The only change that is needed for application is the change of configuration to know how to deploy the code into the real cloud:
 
-```java
-new JCloudScaleConfigurationBuilder(
-	new OpenstackCloudPlatformConfiguration
-		(identityPublicURL, tenantName, imageName, login, password))
-	.build();
-```
+ new JCloudScaleConfigurationBuilder(
+ 	new OpenstackCloudPlatformConfiguration
+ 		(identityPublicURL, tenantName, imageName, login, password))
+ 	.build();
 
 When this configuration will be used, JCloudScale will operate on [http://www.openstack.org/ Open Stack] virtual machines instead of the local Java virtual machines. In more details this is described in [[Documentation#Local_vs._Cloud_Deployment| documentation]].
 
@@ -285,106 +266,103 @@ Let's extend our [[3.Configured.zip| completely configured application]] to work
 This prime numbers cache can be either calculated dynamically on the startup or loaded from some file. Let's go for the second approach, as it sounds more interesting. You can create cache file by modifying any version of our application (e.g.,[[0.initialSampleApplication.zip| 0.initialSampleApplication]]) to write each found number to some file (e.g., <code>primes.txt</code>). However, note that you should keep cache size reasonable, as otherwise searchers will have to load more numbers from cache than they actually need to generate.
 
 To implement this, let's create new class <code>CachedNumbersSearcher</code> that uses the cache of prime numbers instead of comparing to each odd number as <code>SimpleSearcher</code> does:
-```java
-@CloudObject
-public class CachedNumbersSearcher extends SimpleSearcher
-{
-	public static final String CACHE_FILE_NAME = "primes.txt";
-	
-	private List<Long> cachedPrimes = null;
-	private long maxCachedPrime = 0L;
-	
-	CachedNumbersSearcher(@ByValueParameter Range range) 
-	{
-		super(range);
-	}
 
- ...
-```
+ @CloudObject
+ public class CachedNumbersSearcher extends SimpleSearcher
+ {
+ 	public static final String CACHE_FILE_NAME = "primes.txt";
+ 	
+ 	private List<Long> cachedPrimes = null;
+ 	private long maxCachedPrime = 0L;
+ 	
+ 	CachedNumbersSearcher(@ByValueParameter Range range) 
+ 	{
+ 		super(range);
+ 	}
+ 
+  ...
+
 Note that we have to declare <code>range</code> parameter as passed by value again and annotate our class as <code>@CloudObject</code>. 
 
 Also we should not load cache in the constructor as current version of the JCloudScale executes constructor code on both client and cloud machines. To load it lazily, let's create a helper method:
-```java
-private void loadCache()
-{
-	try
-	{
-		File cacheFile = new File(CACHE_FILE_NAME);
-		if(!cacheFile.exists())
-			throw new FileNotFoundException("File "+CACHE_FILE_NAME+" was not found. CachedNumbersSearcher cannot continue");
-		
-		cachedPrimes = new ArrayList<Long>();
-		maxCachedPrime = 0L;
-		
-		try(Scanner scanner = new Scanner(cacheFile))
-		{
-			while(scanner.hasNextLong())
-			{
-				long nextPrime = scanner.nextLong();
-				cachedPrimes.add(nextPrime);
-				if(nextPrime > maxCachedPrime)
-					maxCachedPrime = nextPrime;
-			}
-		}
-		
-		System.out.println("Loaded "+cachedPrimes.size()+" prime numbers.");
-	}
-	catch(IOException ex)
-	{
-		throw new RuntimeException("Failed to load cache", ex);
-	}
-}
 
-private List<Long> getCache()
-{
-	if(cachedPrimes == null)
-		loadCache();
-	
-	return cachedPrimes;
-}
-```
+ private void loadCache()
+ {
+ 	try
+ 	{
+ 		File cacheFile = new File(CACHE_FILE_NAME);
+ 		if(!cacheFile.exists())
+ 			throw new FileNotFoundException("File "+CACHE_FILE_NAME+" was not found. CachedNumbersSearcher cannot continue");
+ 		
+ 		cachedPrimes = new ArrayList<Long>();
+ 		maxCachedPrime = 0L;
+ 		
+ 		try(Scanner scanner = new Scanner(cacheFile))
+ 		{
+ 			while(scanner.hasNextLong())
+ 			{
+ 				long nextPrime = scanner.nextLong();
+ 				cachedPrimes.add(nextPrime);
+ 				if(nextPrime > maxCachedPrime)
+ 					maxCachedPrime = nextPrime;
+ 			}
+ 		}
+ 		
+ 		System.out.println("Loaded "+cachedPrimes.size()+" prime numbers.");
+ 	}
+ 	catch(IOException ex)
+ 	{
+ 		throw new RuntimeException("Failed to load cache", ex);
+ 	}
+ } 
+ 
+ private List<Long> getCache()
+ {
+ 	if(cachedPrimes == null)
+ 		loadCache();
+ 	
+ 	return cachedPrimes;
+ }
 
 Now, when we loaded the cache, we have to override isPrime method (don't forget to change visibility from <code>private</code> to <code>protected</code> in parent class). Also don't forget to change <code>SearcherFactory</code> to return new searcher we created.
-```java
-@Override
-protected boolean isPrime(long number) 
-{
-	// calculating the maximum number we have to check
-	long max = (long)Math.floor(Math.sqrt(number));
-	
-	// checking with the cached numbers
-	for(long i : getCache())
-	{
-		if(i > max)
-			break;
-		
-		if(number % i == 0)
-			return false;
-	}
-	
-	// if we checked already enough numbers, we're done
-	if(max < maxCachedPrime)
-		return true;
-	
-	// otherwise we need to continue checking after biggest loaded prime number
-	for(long i = maxCachedPrime + 2; i < max; i+=2)
-		if(number % i == 0)
-			return false;
-	
-	return true;
-}
-```
+
+ @Override
+ protected boolean isPrime(long number) 
+ {
+ 	// calculating the maximum number we have to check
+ 	long max = (long)Math.floor(Math.sqrt(number));
+ 	
+ 	// checking with the cached numbers
+ 	for(long i : getCache())
+ 	{
+ 		if(i > max)
+ 			break;
+ 		
+ 		if(number % i == 0)
+ 			return false;
+ 	}
+ 	
+ 	// if we checked already enough numbers, we're done
+ 	if(max < maxCachedPrime)
+ 		return true;
+ 	
+ 	// otherwise we need to continue checking after biggest loaded prime number
+ 	for(long i = maxCachedPrime + 2; i < max; i+=2)
+ 		if(number % i == 0)
+ 			return false;
+ 	
+ 	return true;
+ }
 
 Now we came to the main point of this section: in this class we're using an external file, while JCloudScale is completely unaware of that. This will lead to the problem that when this code will be executed on the cloud host, this file won't be available and application will fail with exception. To avoid this, we have to notify JCloudScale to "capture" additional file along with the code. To do this, we add <code>@FileDependency</code> as it is described in [[Documentation#File_Dependencies| documentation]].
-```java
-@CloudObject
-@FileDependency(files = {CachedNumbersSearcher.CACHE_FILE_NAME})
-public class CachedNumbersSearcher extends SimpleSearcher
-{
-	public static final String CACHE_FILE_NAME = "primes.txt";
-        ...
-}
-```
+
+ @CloudObject
+ @FileDependency(files = {CachedNumbersSearcher.CACHE_FILE_NAME})
+ public class CachedNumbersSearcher extends SimpleSearcher
+ {
+ 	public static final String CACHE_FILE_NAME = "primes.txt";
+      ...
+ }
 
 Now the application can run successfully in any environment as the specified file will be provided along with the code.
 
