@@ -258,7 +258,6 @@ the persistence unit:
             <property name="hibernate.connection.password" value="pass" />
             <property name="hibernate.show_sql" value="false" />
             <property name="hibernate.hbm2ddl.auto" value="create"/>
- 
             <property name="hibernate.ejb.event.post-insert" value="at.ac.tuwien.infosys.jcloudscale.datastore.hibernate.DatastoreEventListener" />
             <property name="hibernate.ejb.event.post-load" value="at.ac.tuwien.infosys.jcloudscale.datastore.hibernate.DatastoreEventListener" />
             <property name="hibernate.ejb.event.post-update" value="at.ac.tuwien.infosys.jcloudscale.datastore.hibernate.DatastoreEventListener" />
