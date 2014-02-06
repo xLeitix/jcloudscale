@@ -100,7 +100,7 @@ After we added necessary dependencies and ensured that everything still works, i
 
 This section tells maven that at compile and test-compile stages it should process code with AspectJ and apply aspects defined into the library specified by the group id and artifact id.
 If you compile project again, execution should still be the same, but in addition there should appear new tasks <code>aspectj-maven-plugin:1.4:compile/test-compile</code> with some warnings of not-applied aspects. 
-This is everything we need to do before starting to use JCloudScale in our application. If you had some difficulties applying changes listed here, the complete source code as it should be after successfully performing all changes can be found in [[File:1.Introduction.zip| 1.Introduction]].
+This is everything we need to do before starting to use JCloudScale in our application. If you had some difficulties applying changes listed here, the complete source code as it should be after successfully performing all changes can be found in [[1.Introduction.zip?raw=true| 1.Introduction]].
 
 = Step 2: Selecting Cloud Objects =
 
@@ -166,7 +166,7 @@ Or annotate the type itself to always pass it by value.
 '''Note''', that in this case cloud hosts will operate over the copy of the passed parameter and if they change passed object, they will have to provide it back to the client explicitly to see changes there. For more details see [[Documentation.wiki#Passing_Parameters_ByValue_and_ByReference| documentation]]
 
 '''Congratulations!''' Your application is now cloud-aware. However, for now, instead of using any real cloud, it creates a new Java Virtual Machine to simulate the new cloud host. This approach is called the "'''Local'''" mode of JCloudScale framework, and is used to test the behavior of your application locally before deploying it to the cloud.  As you should have noticed, the running time actually increased. This is caused by the added overhead needed to start virtual machines (one per object), deploy code there and synchronize execution. We will learn how to change the default mode of the JCloudScale framework to actually use the cloud in the following steps.
-The complete code that we should have at this point can be found in [[2.Cloudified.zip| 2.Cloudified]].
+The complete code that we should have at this point can be found in [[2.Cloudified.zip?raw=true| 2.Cloudified]].
 
 = Step 3: JCloudScale Configuration =
 
@@ -257,13 +257,13 @@ For this sample application, we will limit ourselves with '''Local''' JCloudScal
 
 When this configuration will be used, JCloudScale will operate on [http://www.openstack.org/ Open Stack] virtual machines instead of the local Java virtual machines. In more details this is described in [[Documentation.wiki#Local_vs_Cloud_Deployment| documentation]].
 
-The complete source with all discussed configuration-related changes can be found at [[3.Configured.zip| 3.Configured]].
+The complete source with all discussed configuration-related changes can be found at [[3.Configured.zip?raw=true| 3.Configured]].
 
 = Using File Dependency =
 
-Let's extend our [[3.Configured.zip| completely configured application]] to work even faster. If you look through the code of <code>SimpleSearcher</code>, you will see that the method <code>isPrime()</code>, that is executed quite often, does pretty stupid job: verifies if the provided number is divisible by each odd number. However, it would make more sense to try dividing only on prime numbers. This leads us to the point when we need to have some sort of prime numbers cache within which we will verify each provided number. 
+Let's extend our [[3.Configured.zip?raw=true| completely configured application]] to work even faster. If you look through the code of <code>SimpleSearcher</code>, you will see that the method <code>isPrime()</code>, that is executed quite often, does pretty stupid job: verifies if the provided number is divisible by each odd number. However, it would make more sense to try dividing only on prime numbers. This leads us to the point when we need to have some sort of prime numbers cache within which we will verify each provided number. 
 
-This prime numbers cache can be either calculated dynamically on the startup or loaded from some file. Let's go for the second approach, as it sounds more interesting. You can create cache file by modifying any version of our application (e.g.,[[0.initialSampleApplication.zip| 0.initialSampleApplication]]) to write each found number to some file (e.g., <code>primes.txt</code>). However, note that you should keep cache size reasonable, as otherwise searchers will have to load more numbers from cache than they actually need to generate.
+This prime numbers cache can be either calculated dynamically on the startup or loaded from some file. Let's go for the second approach, as it sounds more interesting. You can create cache file by modifying any version of our application (e.g.,[[0.initialSampleApplication.zip?raw=true| 0.initialSampleApplication]]) to write each found number to some file (e.g., <code>primes.txt</code>). However, note that you should keep cache size reasonable, as otherwise searchers will have to load more numbers from cache than they actually need to generate.
 
 To implement this, let's create new class <code>CachedNumbersSearcher</code> that uses the cache of prime numbers instead of comparing to each odd number as <code>SimpleSearcher</code> does:
 
@@ -358,4 +358,4 @@ Now we came to the main point of this section: in this class we're using an exte
 
 Now the application can run successfully in any environment as the specified file will be provided along with the code.
 
-In case you had some difficulties, complete source code with these changes is available at [[3.ConfiguredWithFileDependency.zip| 3.ConfiguredWithFileDependency]]
+In case you had some difficulties, complete source code with these changes is available at [[3.ConfiguredWithFileDependency.zip?raw=true| 3.ConfiguredWithFileDependency]]

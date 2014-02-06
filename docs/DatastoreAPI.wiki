@@ -149,9 +149,9 @@ Actually the following methods are provided by the interface:
 |-
 |<code>void update(Object object);</code> || Update the given object
 |-
-|<T> void migrate(Datastore to, Class<T> objectClass, String id); || Migrate an object to another data store
+|<code><T> void migrate(Datastore to, Class<T> objectClass, String id);</code> || Migrate an object to another data store
 |-
-|<T> void migrate(Datastore to, Class<T> objectClass, MigrationCallback<T> callback, String... ids) || Migrate multiple objects to another data store
+|<code><T> void migrate(Datastore to, Class<T> objectClass, MigrationCallback<T> callback, String... ids);</code>|| Migrate multiple objects to another data store
 |}
 
 A special feature is the possibility to migrate objects from one data store to another, without implementing any additional code. Therefore, the migrate methods can
@@ -195,14 +195,13 @@ for injecting third-party libraries can be used to create the instance and to es
             </lib>
         </libs>
     </datastore>
- </datastores
+ </datastores>
 
 To inject instances of a third-party library it is necessary to extend the configuration in the <code>datastores.xml</code> file shown above. In the libs section of the data store an unbound
 number of libraries can be added using the lib tag. The lib-name provided in the configuration is then used to get the entry for the corresponding library using the lib-wrapper 
 to create an instance of the required class.
 
 The external library can then be injected using the <code>DatastoreLib</code> annotation providing the data store and the library name:
-
  
  public class Main {
  
@@ -269,7 +268,6 @@ the persistence unit:
  </persistence>
 
 A hibernate entity using the frameworks hibernate integration feature might look like this:
-
  
  @Entity
  public class Article {
