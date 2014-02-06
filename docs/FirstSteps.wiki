@@ -143,7 +143,7 @@ In our demo application we can see that the whole application execution is withi
  }
 
 The last thing we should consider are parameters that are passed into the Cloud Object's method invocations and returned from them. These parameters can be delivered in two ways: '''By-Value''' (when the object is serialized and delivered to the other side, therefore creating the copy of this object there) or '''By-Reference''' (when only the proxy of the object is transferred and both sides can change the object simultaneously and observe results). (see 
-[[Documentation.wiki#Passing_Parameters_By-Value_and_By-Reference| documentation]] for details). By default, JCloudScale tries to mimic Java default behavior: passing by-value primitive types and passing by-reference all class types. However, this does not always correspond to the needs of the developers as passing by-reference introduces communication overhead to the application execution. 
+[[Documentation.wiki#Passing_Parameters_ByValue_and_ByReference| documentation]] for details). By default, JCloudScale tries to mimic Java default behavior: passing by-value primitive types and passing by-reference all class types. However, this does not always correspond to the needs of the developers as passing by-reference introduces communication overhead to the application execution. 
 
 To influence JCloudScale defaults and pass some complex parameters by-value instead of by-reference approach, you can annotate your parameters in method execution with <code>@ByValueParameter</code> annotation:
 
@@ -163,7 +163,7 @@ Or annotate the type itself to always pass it by value.
    ...
  }
 
-'''Note''', that in this case cloud hosts will operate over the copy of the passed parameter and if they change passed object, they will have to provide it back to the client explicitly to see changes there. For more details see [[Documentation.wiki#Passing_Parameters_By-Value_and_By-Reference| documentation]]
+'''Note''', that in this case cloud hosts will operate over the copy of the passed parameter and if they change passed object, they will have to provide it back to the client explicitly to see changes there. For more details see [[Documentation.wiki#Passing_Parameters_ByValue_and_ByReference| documentation]]
 
 '''Congratulations!''' Your application is now cloud-aware. However, for now, instead of using any real cloud, it creates a new Java Virtual Machine to simulate the new cloud host. This approach is called the "'''Local'''" mode of JCloudScale framework, and is used to test the behavior of your application locally before deploying it to the cloud.  As you should have noticed, the running time actually increased. This is caused by the added overhead needed to start virtual machines (one per object), deploy code there and synchronize execution. We will learn how to change the default mode of the JCloudScale framework to actually use the cloud in the following steps.
 The complete code that we should have at this point can be found in [[2.Cloudified.zip| 2.Cloudified]].
@@ -255,7 +255,7 @@ For this sample application, we will limit ourselves with '''Local''' JCloudScal
  		(identityPublicURL, tenantName, imageName, login, password))
  	.build();
 
-When this configuration will be used, JCloudScale will operate on [http://www.openstack.org/ Open Stack] virtual machines instead of the local Java virtual machines. In more details this is described in [[Documentation.wiki#Local_vs._Cloud_Deployment| documentation]].
+When this configuration will be used, JCloudScale will operate on [http://www.openstack.org/ Open Stack] virtual machines instead of the local Java virtual machines. In more details this is described in [[Documentation.wiki#Local_vs_Cloud_Deployment| documentation]].
 
 The complete source with all discussed configuration-related changes can be found at [[3.Configured.zip| 3.Configured]].
 

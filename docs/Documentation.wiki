@@ -39,101 +39,92 @@ The most current version of JCloudScale is currently '''0.4.0-SNAPSHOT'''.  This
 
 As a first step to get started with JCloudScale, you need to add it to your project's list of dependencies in your Maven <code>pom.xml</code> file.
 
-```xml
-<dependency>
-	<groupId>jcloudscale</groupId>
-	<artifactId>jcloudscale.core</artifactId>
-	<version>0.4.0</version>
-</dependency>
-```
+ <dependency>
+ 	<groupId>jcloudscale</groupId>
+ 	<artifactId>jcloudscale.core</artifactId>
+ 	<version>0.4.0</version>
+ </dependency>
 
 In addition, as JCloudScale is not yet registered in public maven repositories, you need to add a reference to the [http://www.infosys.tuwien.ac.at/ TU Wien Infosys] maven repository as well:
 
-```xml
-<repositories>
-	<repository>
-		<id>infosys-repository</id>
-		<url>http://www.infosys.tuwien.ac.at/mvn</url>
-	</repository>
-</repositories>
-```
+ <repositories>
+ 	<repository>
+ 		<id>infosys-repository</id>
+ 		<url>http://www.infosys.tuwien.ac.at/mvn</url>
+ 	</repository>
+ </repositories>
 
 However, this is not the only required change to the build process. Additionally, as JCloudScale uses [http://www.eclipse.org/aspectj/ AspectJ] to weave its code into your application, you will need to add compile-time weaving as another step of your compilation process. Many things can be tweaked here, but for most cases it should be sufficient to simply add this plugin to your build:
 
-```xml
-<plugin>
-	<groupId>org.codehaus.mojo</groupId>
-	<artifactId>aspectj-maven-plugin</artifactId>
-	<version>1.4</version>
-	<configuration>
-		<source>1.7</source>
-		<target>1.7</target>
-		<complianceLevel>1.7</complianceLevel>
-		<verbose>true</verbose>
-	</configuration>
-	<executions>
-		<execution>
-			<configuration>
-				<XnoInline>true</XnoInline>
-				<aspectLibraries>
-					<aspectLibrary>
-						<groupId>jcloudscale</groupId>
-						<artifactId>jcloudscale.core</artifactId>
-					</aspectLibrary>
-				</aspectLibraries>
-			</configuration>
-			<goals>
-				<goal>compile</goal>
-				<goal>test-compile</goal>
-			</goals>
-		</execution>
-	</executions>
-	<dependencies>
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjrt</artifactId>
-			<version>1.7.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjtools</artifactId>
-			<version>1.7.0</version>
-		</dependency>
-	</dependencies>
-</plugin>
-```
+ <plugin>
+ 	<groupId>org.codehaus.mojo</groupId>
+ 	<artifactId>aspectj-maven-plugin</artifactId>
+ 	<version>1.4</version>
+ 	<configuration>
+ 		<source>1.7</source>
+ 		<target>1.7</target>
+ 		<complianceLevel>1.7</complianceLevel>
+ 		<verbose>true</verbose>
+ 	</configuration>
+ 	<executions>
+ 		<execution>
+ 			<configuration>
+ 				<XnoInline>true</XnoInline>
+ 				<aspectLibraries>
+ 					<aspectLibrary>
+ 						<groupId>jcloudscale</groupId>
+ 						<artifactId>jcloudscale.core</artifactId>
+ 					</aspectLibrary>
+ 				</aspectLibraries>
+ 			</configuration>
+ 			<goals>
+ 				<goal>compile</goal>
+ 				<goal>test-compile</goal>
+ 			</goals>
+ 		</execution>
+ 	</executions>
+ 	<dependencies>
+ 		<dependency>
+ 			<groupId>org.aspectj</groupId>
+ 			<artifactId>aspectjrt</artifactId>
+ 			<version>1.7.0</version>
+ 		</dependency>
+ 		<dependency>
+ 			<groupId>org.aspectj</groupId>
+ 			<artifactId>aspectjtools</artifactId>
+ 			<version>1.7.0</version>
+ 		</dependency>
+ 	</dependencies>
+ </plugin>
 
 Now it is time to actually start using JCloudScale in the application. The key concept of the JCloudScale is the notion of '''cloud objects'''. Cloud objects are represented by Java classes annotated with the <code>@CloudObject</code> annotation. Whenever JCloudScale finds the creation of the new instance of the class using this annotation, it replaces the constructor call with the code necessary to select a remote host for the object and deploy it there, providing only a proxy object to the application. Following, any invocations on this proxy object actually become remote method invocations on the cloud object. 
 
 A simple cloud object is defined as below.
 
-```java
-@CloudObject
-public class MyCloudObject
-{
+ 
+ @CloudObject
+ public class MyCloudObject
+ {
    
   public String doThings() { ... }
-
+ 
   public void doOtherThings(String param1, String param2) { ... }   
-
+ 
   @DestructCloudObject
   public void iAmDone() { ... }
-
-}
-```
+ 
+ }
 
 Every instance of <code>MyCloudObject</code> is instantiated on a remote host, and all invocations to this object are redirected to this host. As soon as the method <code>MyCloudObject.iAmDone()</code> is invoked, the cloud object is destroyed on the remote host (and any subsequent invocations to this object will trigger <code>JCloudScaleException</code>s).
 
 Using this cloud object in your code is simple. It is just like using any other Java object:
 
-```java
-System.out.println("Starting");
-MyCloudObject object = new MyCloudObject();
-System.out.println(object.doThings());
-object.doOtherThings("first", "second");
-object.iAmDone();
-System.out.println("Done");
-```
+ System.out.println("Starting");
+ MyCloudObject object = new MyCloudObject();
+ System.out.println(object.doThings());
+ object.doOtherThings("first", "second");
+ object.iAmDone();
+ System.out.println("Done");
 
 Note that this simple code snippet actually already triggers some serious back-and-forth between your client application and the remote host, as indicated by the control flow figure below.
 
@@ -141,10 +132,8 @@ Note that this simple code snippet actually already triggers some serious back-a
 
 When using JCloudScale, you should also indicate when your application does not require JCloudScale anymore and can be shut down. To do this, you can use the <code>@JCloudScaleShutdown</code> annotation. After the execution of the method annotated with it, JCloudScale will insert necessary calls to gracefully destroy all remaining cloud objects and shutdown any additional infrastructure created by the framework to communicate with the remote hosts. 
 
-```java
-@JCloudScaleShutdown
-public static void main(String[] args) { ... }
-```
+ @JCloudScaleShutdown
+ public static void main(String[] args) { ... }
 
 == Interacting With Cloud Objects ==
 
@@ -152,66 +141,54 @@ As is the case for any object in Java, clients can fundamentally interact with c
 
 * '''Client invokes a (non-static) method''' - JCloudScale will intercept this method call and schedule its execution on one of the remote hosts. The client will block until the cloud host returns the result of this invocation (or signals completion in case of void methods).
 
-```java
-CloudObject co = new CloudObject(); 
-co.invokeMe(); 
-```
+ CloudObject co = new CloudObject(); 
+ co.invokeMe(); 
 
 * '''Client sets a (non-static) field''' – JCloudScale will intercept this set operation and instruct the cloud host that is responsible for this object to set the value in his copy instead. The proxy in the client VM maintains the old value. The client will block until the value is successfully changed on the server.
 
-```java
-co.publicField = "hugo"; 
-```
+ co.publicField = "hugo"; 
 
 * '''Client gets a (non-static) field''' – JCloudScale will intercept this get operation and request the current value from the cloud host that is responsible for this object. This value is returned to the client. The proxy in the client VM does not change.
 
-```java
-System.out.println(co.publicField); 
-```
+ System.out.println(co.publicField); 
 
 * '''Client invokes a static method''' – JCloudScale will not intercept this operation. The static method will execute in the client VM.
 
-```java
-CloudObject.invokeMeStatically();
-```
+ CloudObject.invokeMeStatically();
 
 * '''Client gets or sets a static field''' – JCloudScale will not intercept this operation. The static field in the client VM will be used 
 
-```java
-CloudObject.staticPublicField = "hugo_static";
-System.out.println(CloudObject.staticPublicField);
-```
+ CloudObject.staticPublicField = "hugo_static";
+ System.out.println(CloudObject.staticPublicField);
 
 Additionally, there is also another case that needs to be discussed in this place. Sometimes, cloud objects (i.e., code running on a cloud host, not the client) might want to get or set the value of static fields. Consider the following case:
 
-```java
-@CloudObject
-public class MyCO {
-
+ 
+ @CloudObject
+ public class MyCO {
+ 
   public static String someValue;
-
+ 
   public void doSomething() {
-		someValue = "newValue";
+ 		someValue = "newValue";
   }
-
-}
-```
+ 
+ }
 
 This is somewhat problematic, as the semantics outlined so far will likely not be what the author of this code intended. To be concrete, in this case, the static field <code>someValue</code> is what we call '''JVM-local''' – i.e., every remote host (and the client JVM, if this is relevant) have a separate value for <code>someValue</code>, and the value is not synchronized between different hosts. Put differently, the value of this field is depending on which host a cloud object is physically deployed on. This is generally a ''bad thing'' in JCloudScale. Hence, it is possible to explicitly demark (non-final) shared static fields in cloud objects using the <code>CloudGlobal</code> annotation.
 
-```java
-@CloudObject
-public class MyCO {
-
+ 
+ @CloudObject
+ public class MyCO {
+ 
   @CloudGlobal
   public static String someValue;
-
+ 
   public void doSomething() {
-		someValue = "newValue";
+ 		someValue = "newValue";
   }
-
-}
-```
+ 
+ }
 
 The semantics of interacting with cloud-global fields are as follows:
 
@@ -235,42 +212,41 @@ Data is passed '''by-value''' ''iff'' it is:
 * either class, invocation or invocation parameter is annotated with <code>@ByValueParameter</code>
 In all other cases, data is passed by-reference. Some examples follow: 
 
-```java
-@CloudObject
-public class MyCO {
-
+ 
+ @CloudObject
+ public class MyCO {
+ 
   @ByValueParameter
   public MyComplexObject field1; // by-value
-
+ 
   public String field2; // by-value
-
+ 
   public MyComplexObject field3; // by-reference
-
+ 
   public @ByValueParameter MyComplexObject getSomething() {
      ... // return value by-value
   }
-
+ 
   public void doSomething(MyComplexObject  parameter) {
-	... // parameter by-reference
+ 	... // parameter by-reference
   }
-
+ 
   @ByValueParameter
   static class MyParameter implements Serializable {
     // class is annotated with @ByValueParameter, 
     // all invocations where this type will be involved will be processed by-value.
   }
-
+ 
   private MyParameter updateMyParameter(MyParameter param) {
    ... //return value and parameter are passed by-value 
        // as the class MyParameter is annotated with @ByValueParameter
   }
-
+ 
   // However, even if MyParameter will be passed here, parameter will be passed by-reference!
   public void updateMyParameter(Object obj) { 
-
+ 
   }
-```
-
+  
 Note that by-value data passing requires the object to be serializable (i.e., to implement the <code>Serializable</code> interface). For by-reference data, this is not required as such data is never actually sent over the wire. However, types used for by-reference data passing need to provide a default no-arg constructor. 
 
 Parameters that are passed by-reference continue to exist only within the client JVM. Hence, invoking methods of by-reference parameters always leads to a callback to the client application. Users should keep this in mind when interacting with by-reference parameters (i.e., in general, invocations to by-reference parameters should be minimized).
@@ -293,62 +269,52 @@ Both, Cloud Objects and objects passed by-reference:
 
 JCloudScale can be configured either directly from code (likely the easier version), or via an XML configuration file. Below, you see a simple code snippet that showcases how to create and modify the configuration.
 
-```java
-JCloudScaleConfiguration config = new JCloudScaleConfigurationBuilder().build();
-config.common().clientLogging().setDefaultLoggingLevel(Level.OFF);
-```
+ JCloudScaleConfiguration config = new JCloudScaleConfigurationBuilder().build();
+ config.common().clientLogging().setDefaultLoggingLevel(Level.OFF);
 
 This configuration can also be stored to a file:
 
-```java
-config.save(new File("config.xml"));
-```
+ config.save(new File("config.xml"));
 
 As well as loaded from a file:
 
-```java
-config = JCloudScaleConfiguration.load(new File("config.xml"));
-```
+ config = JCloudScaleConfiguration.load(new File("config.xml"));
 
 == Specifying Configuration ==
 
 After you obtained an instance of <code>JCloudScaleConfiguration</code>, you have to inform JCloudScale framework to use this configuration. You can do that multiple ways, each of them has own benefits and restrictions.
 # '''You can specify configuration manually.''' To do this, you have to provide an instance of the <code>JCloudScaleConfiguration</code> class to the static method <code>setConfiguration</code> of the <code>JCloudScaleClient</code> class. However, you have to do that '''prior to any interaction''' with the JCloudScale framework, because otherwise some components might be initialized with the default configuration before you provide correct one.
-```java
-JCloudScaleConfiguration config;
-...
-JCloudScaleClient.setConfiguration(config);
-```
+
+ JCloudScaleConfiguration config;
+ ...
+ JCloudScaleClient.setConfiguration(config);
+
 # '''You can specify where to get the configuration from.''' To do this, you have to set system property <code>jcloudscale.configuration</code> (specified by the public constant <code>JCloudScaleClient.JCLOUDSCALE''CONFIGURATION''PROPERTY</code>) to point either to the file where configuration is stored or to the class that has the static parameterless method annotated with <code>@JCloudScaleConfigurationProvider</code> annotation and returns an instance of <code>JCloudScaleConfiguration</code>: 
-```java
-@JCloudScaleConfigurationProvider
-public static JCloudScaleConfiguration createConfiguration() {
- ... // obtain configuration instance and configure it
- return config;
-}
-```
+
+ @JCloudScaleConfigurationProvider
+ public static JCloudScaleConfiguration createConfiguration() {
+  ... // obtain configuration instance and configure it
+  return config;
+ }
 
 You can set system property from the code (assuming that file "config.xml" exists in the current directory):
-```java
-System.setProperty("jcloudscale.configuration", "config.xml");
-```
+
+ System.setProperty("jcloudscale.configuration", "config.xml");
 
 However, this approach does not give you any benefits in comparison to the first one: anyways you have to do that before any interaction with the JCloudScale framework. The real benefit of this approach is that this property can be specified before running the application. To do this with maven, you can apply the following changes the <code>pom.xml</code> (to the <code>exec-maven-plugin</code> in the <code><plugins></code> configuration section):
-```xml
-<configuration>
-	<executable>java</executable>
-	<arguments>
+
+ <configuration>
+ 	<executable>java</executable>
+ 	<arguments>
                 ...
-		<argument>-Djcloudscale.configuration=config.xml</argument>
-		...
-	</arguments>
-</configuration>
-```
+ 		<argument>-Djcloudscale.configuration=config.xml</argument>
+ 		...
+ 	</arguments>
+ </configuration>
 
 You can do that without maven as well. In this case you have to provide mentioned above line as command-line argument to the java:
-```java
+
  java -Djcloudscale.configuration=config.xml app.main.Class
-```
 
 Now JCloudScale will try to load the configuration from the specified location whenever needed.
 
@@ -374,31 +340,30 @@ JCloudScale framework itself cannot detect how Cloud Objects should be mapped to
 
 To create your own scaling policy, you have to create a class that extends <code>at.ac.tuwien.infosys.jcloudscale.policy.AbstractScalingPolicy</code> class and provide an instance of this class to JCloudScale configuration (see [[Documentation#JCloudScale_Configuration]]).
 
-```java
-public abstract class AbstractScalingPolicy
-{
-	/**
-	 * Selects the virtual host for the new cloud object.
-	 * @param newCloudObject The descriptor of the new cloud object.
-	 * @param hostPool The host pool that contains the set of available hosts and allows 
-	 * to perform additional scaling operations on these hosts.
-	 * @return The host that should be used to deploy new cloud object.
-	 */
-	public abstract IHost selectHost(ClientCloudObject newCloudObject, IHostPool hostPool);
-	
-	/**
-	 * This method is called periodically 
-	 * (with the period specified by <b>scaleDownInterval</b> from common configuration) 
-	 * to perform scaling down and cloud usage optimization tasks. 
-	 * @param hostPool The host pool that contains the set of available hosts and allows 
-	 * to perform additional scaling operations on these hosts. 
-	 * @param scaledHost Indicates the host that reached the next <b>scaleDownInterval</b>.
-	 * @return <b>true</b> if the specified host should be scaled down. Otherwise, 
-	 * if the specified host has to stay online for another scaling interval, <b>false</b>. 
-	 */
-	public abstract boolean scaleDown(IHost scaledHost, IHostPool hostPool);
-}
-```
+ 
+ public abstract class AbstractScalingPolicy
+ { 
+ 	/**
+ 	 * Selects the virtual host for the new cloud object.
+ 	 * @param newCloudObject The descriptor of the new cloud object.
+ 	 * @param hostPool The host pool that contains the set of available hosts and allows 
+ 	 * to perform additional scaling operations on these hosts.
+ 	 * @return The host that should be used to deploy new cloud object.
+ 	 */
+ 	public abstract IHost selectHost(ClientCloudObject newCloudObject, IHostPool hostPool);
+ 	
+ 	/**
+ 	 * This method is called periodically 
+ 	 * (with the period specified by <b>scaleDownInterval</b> from common configuration) 
+ 	 * to perform scaling down and cloud usage optimization tasks. 
+ 	 * @param hostPool The host pool that contains the set of available hosts and allows 
+ 	 * to perform additional scaling operations on these hosts. 
+ 	 * @param scaledHost Indicates the host that reached the next <b>scaleDownInterval</b>.
+ 	 * @return <b>true</b> if the specified host should be scaled down. Otherwise, 
+ 	 * if the specified host has to stay online for another scaling interval, <b>false</b>. 
+ 	 */
+ 	public abstract boolean scaleDown(IHost scaledHost, IHostPool hostPool);
+ }
 
 As you can see, you have to implement two methods that will allow JCloudScale to scale up and down. The first method, <code>selectHost</code> will be called on each Cloud Object creation and has to answer the question ''"Which host should this object be deployed to"''? It receives as parameters a descriptor of the new Cloud Object (containing unique ID of the cloud object, it's class, and proxy object that will be used to perform all invocations after object will be deployed to the cloud host) and reference to the cloud hosts' pool that allows to perform various manipulations with the set of available hosts (like, get available hosts, start new host or shutdown existing host). JCloudScale expects this method to return the reference to the cloud host that <code>newCloudObject</code> should be deployed on.
 
@@ -435,29 +400,23 @@ Further note that local deployment is '''not''' meant for production. Realistica
 
 Selecting the deployment mode is part of JCloudScale [[Documentation#JCloudScale_Configuration]]. Just selecting local deployment without further customization can be done as below.
 
-```java
-new JCloudScaleConfigurationBuilder()
-  .build();
-```
+ new JCloudScaleConfigurationBuilder()
+   .build();
 
 Openstack mode is selected similarly, but requires some configuration properties to be able to operate with running instances in the cloud. The simplest configuration looks like this:
 
-```java
-new JCloudScaleConfigurationBuilder(
-		new OpenstackCloudPlatformConfiguration
-			(identityPublicURL, tenantName, imageName, login, password))
+ new JCloudScaleConfigurationBuilder(
+ 		new OpenstackCloudPlatformConfiguration
+ 			(identityPublicURL, tenantName, imageName, login, password))
   .build();
-```
 
 To avoid these cumbersome and huge list of parameters, you can use another overload that accepts instance of <code>Properties</code> object with all Openstack-specific parameters:
 
-```java
-Properties openstackProperties = new Properties();
-... //fill in properties here
-new JCloudScaleConfigurationBuilder(
-  new OpenstackCloudPlatformConfiguration(openstackProperties))
-  .build();
-```
+ Properties openstackProperties = new Properties();
+ ... //fill in properties here
+ new JCloudScaleConfigurationBuilder(
+   new OpenstackCloudPlatformConfiguration(openstackProperties))
+   .build();
 
 The properties that are expected are:
 * <code>OS_AUTH_URL</code> that specifies Authentication URL.
@@ -467,27 +426,23 @@ The properties that are expected are:
 
 In addition, for testing or prototyping purposes mostly, as it hardly makes sense to store access credentials in plain text, JCloudScale allows to specify the path to the file where these properties can be loaded from:
 
-```java
-String openstackPropertiesFilename = "...";
-new JCloudScaleConfigurationBuilder(
-  new OpenstackCloudPlatformConfiguration(openstackPropertiesFilename))
-  .build();
-```
+ String openstackPropertiesFilename = "...";
+ new JCloudScaleConfigurationBuilder(
+   new OpenstackCloudPlatformConfiguration(openstackPropertiesFilename))
+   .build();
 
 Additionally, you can conveniently specify other configuration properties of JCloudScale or cloud platform:
 
-```java
-new JCloudScaleConfigurationBuilder(
-	new OpenstackCloudPlatformConfiguration
-		(identityPublicURL, tenantName, imageName, login, password)
-		.withSshKey(sshKeyName)
-		.withInstanceImage(imageName))
-  .with(scalingPolicyInstance)
-  .withLogging(loggingLevel)
+ new JCloudScaleConfigurationBuilder(
+ 	new OpenstackCloudPlatformConfiguration
+ 		(identityPublicURL, tenantName, imageName, login, password)
+ 		.withSshKey(sshKeyName)
+ 		.withInstanceImage(imageName))
+   .with(scalingPolicyInstance)
+   .withLogging(loggingLevel)
   .withMqServer(hostname, port)
   .withMonitoring(true)
   .build();
-```
 
 All other parts of the application are not dependent on the selected platform and everything should work the same way independently of selected cloud platform. However, after switching for cloud deployment mode, the application will be actually distributed over multiple machines with, possibly, different operation system and file system, what might cause difference in execution and behavior.
 
@@ -495,26 +450,22 @@ All other parts of the application are not dependent on the selected platform an
 
 To the largest extend, deployment in EC2 works exactly like explained above for Openstack. The main difference is that instead of using <code>OpenstackCloudPlatformConfiguration</code>, an instance of <code>EC2CloudPlatformConfiguration</code> should be passed to the JCloudScale configuration. This configuration mostly has the same property values as explained for Openstack. The core difference is that it requires the availability of an AWS properties file with the following content:
 
-```java
-accessKey = YOUR_ACCESS_KEY_IN_AWS
-secretKey = YOUR_SECRET_KEY_IN_AWS
-mq.address= THE_ADDRESS_OF_AN_ACTIVEMQ_INSTANCE
-# e.g.: mq.address = ec2-54-246-46-34.eu-west-1.compute.amazonaws.com
-```
+ accessKey = YOUR_ACCESS_KEY_IN_AWS
+ secretKey = YOUR_SECRET_KEY_IN_AWS
+ mq.address= THE_ADDRESS_OF_AN_ACTIVEMQ_INSTANCE
+ # e.g.: mq.address = ec2-54-246-46-34.eu-west-1.compute.amazonaws.com
 
 Furthermore, an AMI that implements the JCloudScale server component is required. For version 0.2.0, you can use the public image <code>ami-eac5209d</code> in EC2. Alternatively, you can easily build your own image based on our [[BuildingServerImages tutorial]].
 
-```java
-new JCloudScaleConfigurationBuilder(
-	new EC2CloudPlatformConfiguration()
-		.withAwsConfigFile(awsFilePath)
-		.withAwsEndpoint(awsEndpoint)  
-		.withInstanceImage(imageName)
-		.withInstanceType(instanceTypeName)
-		.withSshKey(sshKeyName)
-		.withInstanceImage(imageName))
-  .build();
-```
+ new JCloudScaleConfigurationBuilder(
+ 	new EC2CloudPlatformConfiguration()
+ 		.withAwsConfigFile(awsFilePath)
+ 		.withAwsEndpoint(awsEndpoint)  
+ 		.withInstanceImage(imageName)
+ 		.withInstanceType(instanceTypeName)
+ 		.withSshKey(sshKeyName)
+ 		.withInstanceImage(imageName))
+   .build();
 
 = Event-Based Monitoring =
 
@@ -526,11 +477,9 @@ JCloudScale integrates a powerful [http://esper.codehaus.org/ Esper]-based compl
 
 If monitoring is enabled via the configuration, JCloudScale automatically triggers a set of predefined events that can be used in CEP statements. Monitoring is enabled via
 
-```java
-new JCloudScaleConfigurationBuilder()
+ new JCloudScaleConfigurationBuilder()
   .withMonitoring(true)
   .build();
-```
 
 The following predefined events then become available:
 
@@ -551,89 +500,79 @@ The following predefined events then become available:
 
 In addition to the predefined events listed above, users may want to define and trigger their own evens from their cloud objects. To do so, users should first define their event classes as regular Java beans, which subclass <code>at.ac.tuwien.infosys.jcloudscale.messaging.objects.monitoring.Event</code>. An example is given below:
 
-```java
-public class DurationEvent extends Event {
-	
-	private static final long serialVersionUID = 1L;
-	
-        private long duration;
-	private String hostId;
-	
-	public DurationEvent() {} 
-	
-	public DurationEvent(long duration, String hostId) {
-		this.duration = duration;
-		this.hostId = hostId;
-	}
-	
-	public long getDuration() {
-		return duration;
-	}
-	public void setDuration(long duration) {
-		this.duration = duration;
-	}
-	public String getHostId() {
-		return hostId;
-	}
-	public void setHostId(String hostId) {
-		this.hostId = hostId;
-	}
-}
-```
+ 
+ public class DurationEvent extends Event {
+ 	
+ 	private static final long serialVersionUID = 1L;
+ 	
+ 	private long duration;
+ 	private String hostId;
+ 	
+ 	public DurationEvent() {} 
+ 	
+ 	public DurationEvent(long duration, String hostId) {
+ 		this.duration = duration;
+ 		this.hostId = hostId;
+ 	}
+ 	
+ 	public long getDuration() {
+ 		return duration;
+ 	}
+ 	public void setDuration(long duration) {
+ 		this.duration = duration;
+ 	}
+ 	public String getHostId() {
+ 		return hostId;
+ 	}
+ 	public void setHostId(String hostId) {
+ 		this.hostId = hostId;
+ 	}
+ } 
 
 Before this new event can be triggered and used in CEP statements, it needs to be registered to the event engine. This is also done as part of the configuration:
 
-```java
-new JCloudScaleConfigurationBuilder()
+ new JCloudScaleConfigurationBuilder()
   .withMonitoring(true)
   .withMonitoringEvents(DurationEvent.class)
   .build();
-```
 
 Triggering such events in cloud objects is rather easy. Cloud objects can let JCloudScale inject event sinks, which new events are then written to:
 
-```java
-@CloudObject
-public class MyCloudObject {
-
+ 
+ @CloudObject
+ public class MyCloudObject {
+ 
   @EventSink
   private IEventSink events;
-
+ 
   public void myMethod() {
     events.trigger(
       new DurationEvent(DURATION, HOST_ID)
     );
   }
-
-}
-```
+ 
+ }
 
 == Scaling Based on Events ==
 
 Both, predefined and custom, events can be used in monitoring metrics within scaling policies. Before usage, monitoring metrics need to be registered with JCloudScale:
 
-```java
-MonitoringMetric metric = new MonitoringMetric();
-metric.setName("AvgProcessingTimeMetric");
-metric.setEpl(
-  "select avg(duration) as avg_dur from ClassificationDurationEvent.win:time(10 sec)"
-);
-EventCorrelationEngine.getInstance().registerMetric(metric);
-```
+ MonitoringMetric metric = new MonitoringMetric();
+ metric.setName("AvgProcessingTimeMetric");
+ metric.setEpl(
+   "select avg(duration) as avg_dur from ClassificationDurationEvent.win:time(10 sec)"
+ );
+ EventCorrelationEngine.getInstance().registerMetric(metric);
 
 Once the metric is registered, current (as well as historical) values of the metric can be retrieved easily:
 
-```java
-HashMap mapValue = (HashMap) EventCorrelationEngine.getInstance()
-  .getMetricsDatabase().getLastValue("AvgProcessingTimeMetric");
-double avgDuration = (Double) mapValue.get("avg_dur");
-```
+ HashMap mapValue = (HashMap) EventCorrelationEngine.getInstance()
+   .getMetricsDatabase().getLastValue("AvgProcessingTimeMetric");
+ double avgDuration = (Double) mapValue.get("avg_dur");
 
 If a metric should not be monitored any longer, it should be unregistered:
 
-```java
-EventCorrelationEngine.getInstance().unregisterMetric("AvgProcessingTimeMetric");
-```
+ EventCorrelationEngine.getInstance().unregisterMetric("AvgProcessingTimeMetric");
 
 The <code>epl</code> field in <code>MonitoringMetric</code> can contain any valid Esper CEP statement. At this point, we do not provide a complete documentation of what users can do with Esper, but check the very exhaustive [http://esper.codehaus.org/esper-4.9.0/doc/reference/en-US/html/processingmodel.html online documentation] on the Esper web page.
 
@@ -643,15 +582,11 @@ Typically, JCloudScale applications follow a declarative approach, where objects
 
 JCloudScale supports the imperative programming style via the <code>at.ac.tuwien.infosys.jcloudscale.api.CloudObjects</code> API. For most users, the most relevant method provided by this API is <code>CloudObjects.create(...)</code>, which allows to use an instance of arbitrary type as cloud object. 
 
-```java
-MyRegularObject myObject =  CloudObjects.create(MyRegularObject.class, "constructorParam");
-```
+ MyRegularObject myObject =  CloudObjects.create(MyRegularObject.class, "constructorParam");
 
 Note that <code>MyRegularObject</code> is not annotated with <code>@CloudObject</code>, but will behave like an instance of an annotated type from now on. However, evidently, destruction of such objects also needs to be triggered explicitly.
 
-```java
-CloudObjects.destroy(myObject);
-```
+ CloudObjects.destroy(myObject);
 
 == Advantages and Disadvantages ==
 
@@ -680,43 +615,42 @@ To inform JCloudScale that this class has some additional file dependencies, <co
 Files that should be deployed to the cloud host can be specified in 2 different ways. 
 
 # In case the set of files is fixed and known prior to application compilation, they can be enumerated inside the annotation:
-```java
-@FileDependency(files = {"1.txt", "resources/2.txt", "files/3.txt"})
-public class ClassWithDependencies 
-{
-  ...
-}
-```
+
+ @FileDependency(files = {"1.txt", "resources/2.txt", "files/3.txt"})
+ public class ClassWithDependencies 
+ {
+   ...
+ }
+
 # If the set of files that should be loaded is not known on the application compilation time or developer would prefer to populate this list dynamically, dependency provider approach can be used. To use this approach, <code>@FileDependency</code> annotation's property <code>dependencyProvider</code> should be initialized with the class that implements <code>IFileDependencyProvider</code> and provides the set of files necessary to the annotated class:
-```java
-@FileDependency(dependencyProvider= MyDependencyProvider.class)
-public class ClassWithDependencies 
-{
-  ...
-}
 
-public static class MyDependencyProvider implements IFileDependencyProvider 
-	{
-		@Override
-		public DependentFile[] getDependentFiles() 
-		{
-			List<DependentFile> dependentFiles = new ArrayList<DependentFile>();
-			File fileFolder = new File("files");
-			if(fileFolder.exists())
-			{
-				for(File file : fileFolder.listFiles())
-				{
-					if(file.isFile())
-						dependentFiles.add(new DependentFile(file.getPath()));
-				}
-			}
-			
-			return dependentFiles.toArray(new DependentFile[dependentFiles.size()]);
-		}
-
-	}
-```
-
+ 
+ @FileDependency(dependencyProvider= MyDependencyProvider.class)
+ public class ClassWithDependencies 
+ {
+   ...
+ }
+ 
+ public static class MyDependencyProvider implements IFileDependencyProvider 
+ {
+ 	@Override
+ 	public DependentFile[] getDependentFiles() 
+ 	{
+ 		List<DependentFile> dependentFiles = new ArrayList<DependentFile>();
+ 		File fileFolder = new File("files");
+ 		if(fileFolder.exists())
+ 		{
+ 			for(File file : fileFolder.listFiles())
+ 			{
+ 				if(file.isFile())
+ 					dependentFiles.add(new DependentFile(file.getPath()));
+ 			}
+ 		}
+ 		
+ 		return dependentFiles.toArray(new DependentFile[dependentFiles.size()]);
+ 	}
+ }
+ 
 Note that it is preferable to keep all dependent files within application directory and specify them with the relative path from the current working directory. However, if the specified file is outside of the working directory, JCloudScale will still try to deploy it on the cloud host.
 
 == Dynamic File Dependency Handling == 
@@ -729,16 +663,12 @@ In this case, the [http://docs.oracle.com/javase/6/docs/api/java/lang/ClassLoade
 
 To use this feature, you need a JCloudScale-aware classloader. The best way to obtain such classloader in the code of a cloud object or in any dependent code is to use classloader that loaded the cloud object:
 
-```java
-ClassLoader myClassLoader = this.getClass().getClassLoader();
-```
+ ClassLoader myClassLoader = this.getClass().getClassLoader();
 
 After that, application can request the input stream of the needed file and work with it normally.
 
-```java
-String fileClasspath = "1.txt";
-InputStream fileAsStream = myClassLoader.getResourceAsStream(fileClasspath);
-```
+ String fileClasspath = "1.txt";
+ InputStream fileAsStream = myClassLoader.getResourceAsStream(fileClasspath);
 
 '''Note''' that as long as file you are trying to load is on classpath, you can use any classloader in client-side code (the code that is not executing on remote host). However, described above approach universal and should work for any code, thus we recommended to use it always to load resources from classpath. 
 
@@ -754,50 +684,46 @@ The commandline interface can be built and executed from the source code distrib
 
 Alternatively, users can also just get and start a binary distribution of the CLI, which is accessible via MVN dependencies. To do so, users should add the following dependency to their MVN build:
 
-```java
-<dependency>
-	<groupId>jcloudscale</groupId>
-	<artifactId>jcloudscale.cli</artifactId>
-	<version>0.2.0</version>
-</dependency>
-```
+ <dependency>
+ 	<groupId>jcloudscale</groupId>
+ 	<artifactId>jcloudscale.cli</artifactId>
+ 	<version>0.2.0</version>
+ </dependency>
 
 With this dependency in place, the CLI can be started by running <code>at.ac.tuwien.infosys.jcloudscale.cli.CLI</code>. For instance, users could add the following profile to their MVN build:
 
-```java
-	<profiles>
-		<profile>
-			<id>cmd-client</id>
-			<activation>
-				<activeByDefault>false</activeByDefault>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>exec-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<goals>
-									<goal>exec</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<executable>java</executable>
-							<arguments>
-								<argument>-Djava.util.logging.config.file=target/classes/logging.properties</argument>
-								<argument>-classpath</argument>
-								<classpath />
-								<argument>at.ac.tuwien.infosys.jcloudscale.cli.CLI</argument>
-							</arguments>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-```
+ 	<profiles>
+ 		<profile>
+ 			<id>cmd-client</id>
+ 			<activation>
+ 				<activeByDefault>false</activeByDefault>
+ 			</activation>
+ 			<build>
+ 				<plugins>
+ 					<plugin>
+ 						<groupId>org.codehaus.mojo</groupId>
+ 						<artifactId>exec-maven-plugin</artifactId>
+ 						<executions>
+ 							<execution>
+ 								<goals>
+ 									<goal>exec</goal>
+ 								</goals>
+ 							</execution>
+ 						</executions>
+ 						<configuration>
+ 							<executable>java</executable>
+ 							<arguments>
+ 								<argument>-Djava.util.logging.config.file=target/classes/logging.properties</argument>
+ 								<argument>-classpath</argument>
+ 								<classpath />
+ 								<argument>at.ac.tuwien.infosys.jcloudscale.cli.CLI</argument>
+ 							</arguments>
+ 						</configuration>
+ 					</plugin>
+ 				</plugins>
+ 			</build>
+ 		</profile>
+ 	</profiles>
 
 Now, the CLI can be started easily from this project via <code>mvn exec:exec -Pcmd-client</code>.
 
@@ -807,75 +733,53 @@ The CLI is a prompt which currently supports the following commands:
 
 * <code>con</code> (''or'' <code>connect</code>) <code>MQ_ADDRESS</code> - connect to a message queue used by a JCloudScale installation. This is typically the first thing you want to do.
 
-```java
-jcloudscale> connect 128.131.172.119
-```
+ jcloudscale> connect 128.131.172.119
 
 * <code>discon</code> (''or'' <code>disconnect</code>) - disconnect from the message queue. You should do that before closing the prompt.
 
-```
-jcloudscale> disconnect
-```
+ jcloudscale> disconnect
 
 * <code>exit</code> - close the prompt.
 
-```
-jcloudscale> close
-```
+ jcloudscale> close
 
 * <code>?list</code> - list all available commands.
 
-```
-jcloudscale> ?list
-```
+ jcloudscale> ?list
 
 * <code>ls-ch</code> (''or'' <code>list-ch</code>) - List all hosts currently used by this JCloudScale installation.
 
-```
-jcloudscale> ls-ch
-```
+ jcloudscale> ls-ch
 
 * <code>ch</code> (''or'' <code>ch-details</code>) <code>UUID''OF''HOST</code> - Show details to the host with the given UUID.
 
-```
-jcloudscale> ch f3d1dbfa-74d1-43af-ab05-ce45cb432dd9
-```
+ jcloudscale> ch f3d1dbfa-74d1-43af-ab05-ce45cb432dd9
 
 * <code>ls-co</code> (''or'' <code>list-co</code>) - List all (not destroyed) cloud objects.
 
-```
-jcloudscale> ls-co
-```
+ jcloudscale> ls-co
 
 * <code>add-ch</code> - Create a new host. The new host will be used for new cloud objects.
 
-```
-jcloudscale> add-ch
-```
+ jcloudscale> add-ch
 
 * <code>del-ch</code> (''or'' <code>destroy-ch</code>) <code>UUID_OF_HOST</code> - Destroy the host with the given UUID. '''Warning''' - check first if there are any cloud objects deployed to this host, as they will be destroyed along with the host, leaving your application potentially in an inconsistent state.
 
-```
-jcloudscale> del-ch f3d1dbfa-74d1-43af-ab05-ce45cb432dd9
-```
+ jcloudscale> del-ch f3d1dbfa-74d1-43af-ab05-ce45cb432dd9
 
 * <code>del-co</code> (''or'' <code>destroy-co</code>) <code>UUID_OF_CLOUDOBJECT</code> - Destroy cloud object with the given UUID. '''Warning''' - make sure that your application handles the unexpected destruction of cloud objects gracefully.
 
-```
-jcloudscale> del-co d55dbcb1-8d23-4e63-b6b4-5741fce7e189
-```
+ jcloudscale> del-co d55dbcb1-8d23-4e63-b6b4-5741fce7e189
 
 = Data Store Integration =
 
 The current version of JCloudScale also includes a custom library for mapping Java objects to NoSQL data stores (among other features). Brief initial documentation of these features can be found in a separate [[DatastoreAPI | WIKI page]]. As the data store library is an extension component, you will need to add another dependency to your build:
 
-```xml
-<dependency>
+ <dependency>
    <groupId>jcloudscale</groupId>
    <artifactId>jcloudscale.datastorelib</artifactId>
    <version>0.4.0</version>
-</dependency>
-```
+ </dependency>
 
 = Building Hybrid Cloud Applications =
 
