@@ -4,7 +4,7 @@ JCloudScale is a framework for deploying and managing applications in an '''Infr
 
 The basic architecture of many JCloudScale applications is depicted below.
 
-[[JCloudScaleModel.png?raw=true]]
+[[File:JCloudScaleModel.png]]
 
 == What Kind of Applications Can Profit from JCloudScale? ==
 

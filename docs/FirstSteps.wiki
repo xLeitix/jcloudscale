@@ -100,7 +100,7 @@ After we added necessary dependencies and ensured that everything still works, i
 
 This section tells maven that at compile and test-compile stages it should process code with AspectJ and apply aspects defined into the library specified by the group id and artifact id.
 If you compile project again, execution should still be the same, but in addition there should appear new tasks <code>aspectj-maven-plugin:1.4:compile/test-compile</code> with some warnings of not-applied aspects. 
-This is everything we need to do before starting to use JCloudScale in our application. If you had some difficulties applying changes listed here, the complete source code as it should be after successfully performing all changes can be found in [[1.Introduction.zip| 1.Introduction]].
+This is everything we need to do before starting to use JCloudScale in our application. If you had some difficulties applying changes listed here, the complete source code as it should be after successfully performing all changes can be found in [[File:1.Introduction.zip| 1.Introduction]].
 
 = Step 2: Selecting Cloud Objects =
 
