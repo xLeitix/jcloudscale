@@ -13,5 +13,5 @@ To simplify a bit, you can think of JCloudScale as your personal Platform-as-a-S
 
 In order to get started, you should check out the following resources:
 
-* Our [[docs/FirstSteps.wiki | First Steps]] guide.
-* The full [[docs/Documentation.wiki | documentation]].
+* Our [[docs/FirstSteps.wiki| First Steps]] guide.
+* The full [[docs/Documentation.wiki| documentation]].
