@@ -29,7 +29,7 @@ Before you start, please ensure that the following software is available or inst
 
 == Javadocs ==
 
-Please find the automatically generated API documentation for JCloudScale [http://www.infosys.tuwien.ac.at/staff/leitner/jcloudscale/javadoc/ here].
+Please find the automatically generated API documentation for JCloudScale [http://xleitix.github.io/jcloudscale/apidocs/ here].
 
 == Current Version ==
 
