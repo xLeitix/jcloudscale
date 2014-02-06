@@ -18,7 +18,7 @@ If you don't want to mess with the JCloudScale source code, following documentat
 
 = Introduction =
 
-If you want to try out JCloudScale with your own application and don't have time for [[Documentation.wiki| Documentation]], here's the illustrative example that shows complete JCloudScale integration process. Our example will be an application for prime numbers searching. The original ("un-cloudified") version of this application can be found at [0.initialSampleApplication.zip| 0.initialSampleApplication]. 
+If you want to try out JCloudScale with your own application and don't have time for [[Documentation.wiki| Documentation]], here's the illustrative example that shows complete JCloudScale integration process. Our example will be an application for prime numbers searching. The original ("un-cloudified") version of this application can be found at [https://github.com/xLeitix/jcloudscale/blob/master/docs/0.initialSampleApplication.zip| 0.initialSampleApplication]. 
 
 This application represents a typical scalable application, which will allow us to demonstrate the main features and usage scenarios of the JCloudScale framework.
 The application is built with the [http://maven.apache.org/ Maven] ideology in mind, but can be run in [http://www.eclipse.org/  Eclipse] as well. The main goal of the application is to calculate the amount of prime numbers within a specified integer range. With the default configuration, the application is supposed to execute in less than 30 seconds on modern hardware, however you can play with it and configure running time to fit your needs or wishes. 
@@ -212,6 +212,7 @@ You can change that behavior in the server logging configuration.
 
 To scale application according to our needs, we need to create a scaling policy. For our demo case it will be really simple one (similar to the <code>SingleHostScalingPolicy</code> from default JCloudScale policies set), but it will give us some reasonable information on when and how scaling policies are used. In your application you will need to write more sophisticated scaling policies. You can learn how to do this in appropriate [[Documentation#Writing_Scaling_Policies| documentation section]].
 
+ 
  @XmlRootElement
  public class MyScalingPolicy extends AbstractScalingPolicy {
  
@@ -267,6 +268,7 @@ This prime numbers cache can be either calculated dynamically on the startup or 
 
 To implement this, let's create new class <code>CachedNumbersSearcher</code> that uses the cache of prime numbers instead of comparing to each odd number as <code>SimpleSearcher</code> does:
 
+ // Cached Numbers Searcher class
  @CloudObject
  public class CachedNumbersSearcher extends SimpleSearcher
  {
@@ -281,6 +283,7 @@ To implement this, let's create new class <code>CachedNumbersSearcher</code> tha
  	}
  
   ...
+ }
 
 Note that we have to declare <code>range</code> parameter as passed by value again and annotate our class as <code>@CloudObject</code>. 
 
