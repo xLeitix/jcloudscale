@@ -55,7 +55,7 @@ import com.google.common.io.Files;
  */
 public class ClassLoaderTest {
 	static final long TIMEOUT = 5000L;
-	static final String RESOURCE = "META-INF"+File.separator+"openstack.properties";
+	static final String RESOURCE = "openstack.props";
 	static final String CONTENT;
 
 	static {
