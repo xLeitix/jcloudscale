@@ -38,11 +38,11 @@ To be able to use any features of JCloudScale, we should apply some modification
 At first, we have to add the JCloudScale dependency. To do this, we open the project’s pom.xml file and insert the following code into the <code><dependencies></code> section. The position of this particular dependency does not matter for maven. Also you may need to change version to match the one you actually target:
 
 <pre> 
-	<dependency>
-		<groupId>jcloudscale</groupId>
-		<artifactId>jcloudscale.core</artifactId>
-		<version>0.4.0</version>
-	</dependency>
+<dependency>
+	<groupId>jcloudscale</groupId>
+	<artifactId>jcloudscale.core</artifactId>
+	<version>0.4.0</version>
+</dependency>
 </pre>
 In addition, as JCloudScale is not registered in public maven repositories, you need to add a reference to the TU Wien Infosys maven repository to the root of the pom.xml file (not into <code><dependencies></code> section, but create a new <code><repositories></code> section):
 
