@@ -106,7 +106,7 @@ This is everything we need to do before starting to use JCloudScale in our appli
 
 At this point you should have all necessary maven configuration applied to start using JCloudScale and the project should still successfully run. However, still no actual change in the behavior of the application will occur, as we have not yet designated any cloud objects. Now we will start modifying the code of the application to start using JCloudScale.
 
-The whole scaling concept of JCloudScale works around the Cloud Objects: the instances of classes that do heavy work and are deployed on the cloud hosts. For more details, see [documentation](Documentation.md#Basic_Usage).
+The whole scaling concept of JCloudScale works around the Cloud Objects: the instances of classes that do heavy work and are deployed on the cloud hosts. For more details, see [documentation](Documentation.md#basic-usage).
 
 Selecting the right classes in your application to become Cloud Objects is very important. Keep in mind that Cloud Objects are very expensive to create and invoke. They may look like regular Java objects, but interacting with them from the rest of the application always requires remoting via the message bus.
 
@@ -118,7 +118,7 @@ In case of our sample application it is easy to see that the searcher class (`Si
     	...
     }
 
-Now all *non-static method invocations* to the instance of the class `MyCloudObject` will be redirected to the appropriate cloud host and executed there seamlessly for application. Details and limitations of this process are described in [documentation](Documentation.md#Interacting_With_Cloud_Objects).
+Now all *non-static method invocations* to the instance of the class `MyCloudObject` will be redirected to the appropriate cloud host and executed there seamlessly for application. Details and limitations of this process are described in [documentation](Documentation.md#interacting-with-cloud-objects).
 
 In principle, this is everything we need to do to introduce all necessary cloud-related code to deploy this object to the cloud. However, to make it work properly and not cause any problems for our application, we need to add a few more annotations.
 
@@ -143,7 +143,7 @@ In our demo application we can see that the whole application execution is withi
     }
 
 The last thing we should consider are parameters that are passed into the Cloud Object's method invocations and returned from them. These parameters can be delivered in two ways: **By-Value** (when the object is serialized and delivered to the other side, therefore creating the copy of this object there) or **By-Reference** (when only the proxy of the object is transferred and both sides can change the object simultaneously and observe results). (see 
-[documentation](Documentation.md#Passing_Parameters_ByValue_and_ByReference) for details). By default, JCloudScale tries to mimic Java default behavior: passing by-value primitive types and passing by-reference all class types. However, this does not always correspond to the needs of the developers as passing by-reference introduces communication overhead to the application execution. 
+[documentation](Documentation.md#passing-parameters-by-value-and-by-reference) for details). By default, JCloudScale tries to mimic Java default behavior: passing by-value primitive types and passing by-reference all class types. However, this does not always correspond to the needs of the developers as passing by-reference introduces communication overhead to the application execution. 
 
 To influence JCloudScale defaults and pass some complex parameters by-value instead of by-reference approach, you can annotate your parameters in method execution with `@ByValueParameter` annotation:
 
@@ -163,7 +163,7 @@ Or annotate the type itself to always pass it by value.
       ...
     }
 
-**Note**, that in this case cloud hosts will operate over the copy of the passed parameter and if they change passed object, they will have to provide it back to the client explicitly to see changes there. For more details see [documentation](Documentation.md#Passing_Parameters_ByValue_and_ByReference)
+**Note**, that in this case cloud hosts will operate over the copy of the passed parameter and if they change passed object, they will have to provide it back to the client explicitly to see changes there. For more details see [documentation](Documentation.md#passing-parameters-by-value-and-by-reference)
 
 **Congratulations!** Your application is now cloud-aware. However, for now, instead of using any real cloud, it creates a new Java Virtual Machine to simulate the new cloud host. This approach is called the "**Local**" mode of JCloudScale framework, and is used to test the behavior of your application locally before deploying it to the cloud.  As you should have noticed, the running time actually increased. This is caused by the added overhead needed to start virtual machines (one per object), deploy code there and synchronize execution. We will learn how to change the default mode of the JCloudScale framework to actually use the cloud in the following steps.
 The complete code that we should have at this point can be found in [2.Cloudified](2.Cloudified.zip?raw=true).
@@ -173,7 +173,7 @@ The complete code that we should have at this point can be found in [2.Cloudifie
 As you saw in the previous sections, using JCloudScale is pretty easy and does not require applying any sophisticated changes to your application. However, when you are not satisfied with the default behavior of JCloudScale, you should be able to change it to fit your needs. To do this, you have to change the default configuration of the JCloudScale framework.
 
 ##  Specifying configuration 
-To be as flexible as possible and satisfy most of the users' needs, JCloudScale can be configured in a few different ways. For detailed explanation of different approaches, their benefits and limitations, see [documentation](Documentation.md#JCloudScale_Configuration).
+To be as flexible as possible and satisfy most of the users' needs, JCloudScale can be configured in a few different ways. For detailed explanation of different approaches, their benefits and limitations, see [documentation](Documentation.md#jcloudscale-configuration).
 
 In our demo application, we will specify configuration by creating special configuration providing method in the `prime.Main` class:
 
@@ -209,7 +209,7 @@ You can change that behavior in the server logging configuration.
 
 ##  Scaling Policy 
 
-To scale application according to our needs, we need to create a scaling policy. For our demo case it will be really simple one (similar to the `SingleHostScalingPolicy` from default JCloudScale policies set), but it will give us some reasonable information on when and how scaling policies are used. In your application you will need to write more sophisticated scaling policies. You can learn how to do this in appropriate [documentation section](Documentation.md#Writing_Scaling_Policies).
+To scale application according to our needs, we need to create a scaling policy. For our demo case it will be really simple one (similar to the `SingleHostScalingPolicy` from default JCloudScale policies set), but it will give us some reasonable information on when and how scaling policies are used. In your application you will need to write more sophisticated scaling policies. You can learn how to do this in appropriate [documentation section](Documentation.md#writing-scaling-policies).
 
  
     @XmlRootElement
@@ -255,7 +255,7 @@ For this sample application, we will limit ourselves with **Local** JCloudScale 
     		(identityPublicURL, tenantName, imageName, login, password))
     	.build();
 
-When this configuration will be used, JCloudScale will operate on [Open Stack](http://www.openstack.org/) virtual machines instead of the local Java virtual machines. In more details this is described in [documentation](Documentation.md#Local_vs_Cloud_Deployment).
+When this configuration will be used, JCloudScale will operate on [Open Stack](http://www.openstack.org/) virtual machines instead of the local Java virtual machines. In more details this is described in [documentation](Documentation.md#local-vs-cloud-deployment).
 
 The complete source with all discussed configuration-related changes can be found at [3.Configured](3.Configured.zip?raw=true).
 
@@ -346,7 +346,7 @@ Now, when we loaded the cache, we have to override isPrime method (don't forget 
     	return true;
     }
 
-Now we came to the main point of this section: in this class we're using an external file, while JCloudScale is completely unaware of that. This will lead to the problem that when this code will be executed on the cloud host, this file won't be available and application will fail with exception. To avoid this, we have to notify JCloudScale to "capture" additional file along with the code. To do this, we add `@FileDependency` as it is described in [documentation](Documentation.md#File_Dependencies).
+Now we came to the main point of this section: in this class we're using an external file, while JCloudScale is completely unaware of that. This will lead to the problem that when this code will be executed on the cloud host, this file won't be available and application will fail with exception. To avoid this, we have to notify JCloudScale to "capture" additional file along with the code. To do this, we add `@FileDependency` as it is described in [documentation](Documentation.md#file-dependencies).
 
     @CloudObject
     @FileDependency(files = {CachedNumbersSearcher.CACHE_FILE_NAME})
