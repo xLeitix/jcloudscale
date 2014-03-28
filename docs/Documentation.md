@@ -142,26 +142,26 @@ As is the case for any object in Java, clients can fundamentally interact with c
 * **Client invokes a (non-static) method** - JCloudScale will intercept this method call and schedule its execution on one of the remote hosts. The client will block until the cloud host returns the result of this invocation (or signals completion in case of void methods).
 
     
-    CloudObject co = new CloudObject();
-    co.invokeMe();
+        CloudObject co = new CloudObject();
+        co.invokeMe();
     
     
-* **Client sets a (non-static) field** – JCloudScale will intercept this set operation and instruct the cloud host that is responsible for this object to set the value in his copy instead. The proxy in the client VM maintains the old value. The client will block until the value is successfully changed on the server.
+* **Client sets a (non-static) field** ï¿½ JCloudScale will intercept this set operation and instruct the cloud host that is responsible for this object to set the value in his copy instead. The proxy in the client VM maintains the old value. The client will block until the value is successfully changed on the server.
 
-    co.publicField = "hugo";
+        co.publicField = "hugo";
 
-* **Client gets a (non-static) field** – JCloudScale will intercept this get operation and request the current value from the cloud host that is responsible for this object. This value is returned to the client. The proxy in the client VM does not change.
+* **Client gets a (non-static) field** ï¿½ JCloudScale will intercept this get operation and request the current value from the cloud host that is responsible for this object. This value is returned to the client. The proxy in the client VM does not change.
 
-    System.out.println(co.publicField);
+        System.out.println(co.publicField);
 
-* **Client invokes a static method** – JCloudScale will not intercept this operation. The static method will execute in the client VM.
+* **Client invokes a static method** ï¿½ JCloudScale will not intercept this operation. The static method will execute in the client VM.
 
-    CloudObject.invokeMeStatically();
+        CloudObject.invokeMeStatically();
 
-* **Client gets or sets a static field** – JCloudScale will not intercept this operation. The static field in the client VM will be used 
+* **Client gets or sets a static field** ï¿½ JCloudScale will not intercept this operation. The static field in the client VM will be used 
 
-    CloudObject.staticPublicField = "hugo_static";
-    System.out.println(CloudObject.staticPublicField);
+        CloudObject.staticPublicField = "hugo_static";
+        System.out.println(CloudObject.staticPublicField);
 
 Additionally, there is also another case that needs to be discussed in this place. Sometimes, cloud objects (i.e., code running on a cloud host, not the client) might want to get or set the value of static fields. Consider the following case:
 
@@ -177,7 +177,7 @@ Additionally, there is also another case that needs to be discussed in this plac
     
     }
 
-This is somewhat problematic, as the semantics outlined so far will likely not be what the author of this code intended. To be concrete, in this case, the static field `someValue` is what we call **JVM-local** – i.e., every remote host (and the client JVM, if this is relevant) have a separate value for `someValue`, and the value is not synchronized between different hosts. Put differently, the value of this field is depending on which host a cloud object is physically deployed on. This is generally a *bad thing* in JCloudScale. Hence, it is possible to explicitly demark (non-final) shared static fields in cloud objects using the `CloudGlobal` annotation.
+This is somewhat problematic, as the semantics outlined so far will likely not be what the author of this code intended. To be concrete, in this case, the static field `someValue` is what we call **JVM-local** ï¿½ i.e., every remote host (and the client JVM, if this is relevant) have a separate value for `someValue`, and the value is not synchronized between different hosts. Put differently, the value of this field is depending on which host a cloud object is physically deployed on. This is generally a *bad thing* in JCloudScale. Hence, it is possible to explicitly demark (non-final) shared static fields in cloud objects using the `CloudGlobal` annotation.
 
     
     @CloudObject
@@ -194,9 +194,9 @@ This is somewhat problematic, as the semantics outlined so far will likely not b
 
 The semantics of interacting with cloud-global fields are as follows:
 
-* **Cloud object sets a cloud-global field** – JCloudScale will intercept this set operation and instruct the client via callback that it should set this value instead. The cloud object will block until the value is successfully changed on client-side.
+* **Cloud object sets a cloud-global field** ï¿½ JCloudScale will intercept this set operation and instruct the client via callback that it should set this value instead. The cloud object will block until the value is successfully changed on client-side.
 
-* **Cloud object gets a cloud-global field** – JCloudScale will intercept this get operation and request the current value from the client. This value is returned.
+* **Cloud object gets a cloud-global field** ï¿½ JCloudScale will intercept this get operation and request the current value from the client. This value is returned.
 
 Likely, this will capture the intend of the author of the above code snippet better. However, users should keep in mind that getting and setting cloud-global fields involves remoting and is hence significantly more expensive than regular static field access. Furthermore, note that getting and setting cloud-global fields is by default just as unsynchronized as interaction with regular static fields. If one cloud object sets a static field, there is no guarantee that another cloud object will not swoop in and override this value immediately. 
 
@@ -286,19 +286,20 @@ As well as loaded from a file:
 ##  Specifying Configuration 
 
 After you obtained an instance of `JCloudScaleConfiguration`, you have to inform JCloudScale framework to use this configuration. You can do that multiple ways, each of them has own benefits and restrictions.
+
 1.**You can specify configuration manually.** To do this, you have to provide an instance of the `JCloudScaleConfiguration` class to the static method `setConfiguration` of the `JCloudScaleClient` class. However, you have to do that **prior to any interaction** with the JCloudScale framework, because otherwise some components might be initialized with the default configuration before you provide correct one.
 
-    JCloudScaleConfiguration config;
-    ...
-    JCloudScaleClient.setConfiguration(config);
+        JCloudScaleConfiguration config;
+        ...
+        JCloudScaleClient.setConfiguration(config);
 
 1.**You can specify where to get the configuration from.** To do this, you have to set system property `jcloudscale.configuration` (specified by the public constant `JCloudScaleClient.JCLOUDSCALE*CONFIGURATION*PROPERTY`) to point either to the file where configuration is stored or to the class that has the static parameterless method annotated with `@JCloudScaleConfigurationProvider` annotation and returns an instance of `JCloudScaleConfiguration`: 
 
-    @JCloudScaleConfigurationProvider
-    public static JCloudScaleConfiguration createConfiguration() {
-     ... // obtain configuration instance and configure it
-     return config;
-    }
+        @JCloudScaleConfigurationProvider
+        public static JCloudScaleConfiguration createConfiguration() {
+         ... // obtain configuration instance and configure it
+         return config;
+        }
 
 You can set system property from the code (assuming that file "config.xml" exists in the current directory):
 
@@ -324,17 +325,18 @@ Now JCloudScale will try to load the configuration from the specified location w
 ##  Configuration Structure 
 
 To understand better what can be configured within the JCloudScale framework, here is the complete list of the configuration modules with short explanations. Some modules will be explained in more detail below.
-1.*Common Configuration*: contains parameters that are shared by client and server.
- 1. *Class Loader Configuration*: contains type and configuration specific to the appropriate class loader. Default implementation is the `CachingClassLoaderConfiguration`.
- 1. *Client Id*: The unique identifier of the client that allows server to distinguish between clients and communicate with them.
- 1. *Client Logging Configuration*: The configuration of the Logging of the JCloudScale components that work on the client.
- 1. *Communication Configuration*: The configuration of the Message Queue connection and data transferring parameters.
- 1. *Monitoring Configuration*: The configuration of the JCloudScale state monitoring and events processing.
- 1. *Scaling Policy*: A Java class that specifies the rules how the Cloud Host is selected for the new instance of the Cloud Object.
- 1. *UI Configuration*: The configuration of the management interface, which allows monitoring what is actually happening within the application. 
+
+1. *Common Configuration*: contains parameters that are shared by client and server.
+    1. *Class Loader Configuration*: contains type and configuration specific to the appropriate class loader. Default implementation is the `CachingClassLoaderConfiguration`.
+    1. *Client Id*: The unique identifier of the client that allows server to distinguish between clients and communicate with them.
+    1. *Client Logging Configuration*: The configuration of the Logging of the JCloudScale components that work on the client.
+    1. *Communication Configuration*: The configuration of the Message Queue connection and data transferring parameters.
+    1. *Monitoring Configuration*: The configuration of the JCloudScale state monitoring and events processing.
+    1. *Scaling Policy*: A Java class that specifies the rules how the Cloud Host is selected for the new instance of the Cloud Object.
+    1. *UI Configuration*: The configuration of the management interface, which allows monitoring what is actually happening within the application. 
 1. *Server Configuration*: contains parameters that are specific for the server.
- 1. *Cloud Platform Configuration*: The configuration specific for the selected platform. By default it is represented either by `LocalCloudPlatformConfiguration` or `OpenstackCloudPlatformConfiguration`.
- 1. *Server Logging Configuration*: The configuration of the Logging of the JCloudScale components that work on the server.
+    1. *Cloud Platform Configuration*: The configuration specific for the selected platform. By default it is represented either by `LocalCloudPlatformConfiguration` or `OpenstackCloudPlatformConfiguration`.
+    1. *Server Logging Configuration*: The configuration of the Logging of the JCloudScale components that work on the server.
 1. *Version*: the version of the JCloudScale platform that created this configuration object.
 
 ##  Writing Scaling Policies 
