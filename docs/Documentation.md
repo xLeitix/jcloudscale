@@ -283,6 +283,7 @@ As well as loaded from a file:
 ##  Specifying Configuration 
 
 After you obtained an instance of `JCloudScaleConfiguration`, you have to inform JCloudScale framework to use this configuration. You can do that multiple ways, each of them has own benefits and restrictions.
+
 1. **You can specify configuration manually.** To do this, you have to provide an instance of the `JCloudScaleConfiguration` class to the static method `setConfiguration` of the `JCloudScaleClient` class. However, you have to do that **prior to any interaction** with the JCloudScale framework, because otherwise some components might be initialized with the default configuration before you provide correct one.
 
         JCloudScaleConfiguration config;
@@ -321,6 +322,7 @@ Now JCloudScale will try to load the configuration from the specified location w
 ##  Configuration Structure 
 
 To understand better what can be configured within the JCloudScale framework, here is the complete list of the configuration modules with short explanations. Some modules will be explained in more detail below.
+
 1. *Common Configuration*: contains parameters that are shared by client and server.
     1. *Class Loader Configuration*: contains type and configuration specific to the appropriate class loader. Default implementation is the `CachingClassLoaderConfiguration`.
     1. *Client Id*: The unique identifier of the client that allows server to distinguish between clients and communicate with them.
