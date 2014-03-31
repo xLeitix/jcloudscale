@@ -23,7 +23,7 @@ for each project named `datastores.xml`. A simple configuration may look as foll
 
 A configuration file can contain the settings for multiple data stores. There are basically 5 options used to configure a data store:
 
-|**Option** | **Example On** | **Description** |
+|**Option** | **Example** | **Description** |
 | ------------- | ------------ | ----------- |
 | name | riak | The name of the data store used as reference|
 | host | 127.0.0.1 | The host of the data store|

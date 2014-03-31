@@ -290,7 +290,7 @@ After you obtained an instance of `JCloudScaleConfiguration`, you have to inform
         ...
         JCloudScaleClient.setConfiguration(config);
 
-1. **You can specify where to get the configuration from.** To do this, you have to set system property `jcloudscale.configuration` (specified by the public constant `JCloudScaleClient.JCLOUDSCALE*CONFIGURATION*PROPERTY`) to point either to the file where configuration is stored or to the class that has the static parameterless method annotated with `@JCloudScaleConfigurationProvider` annotation and returns an instance of `JCloudScaleConfiguration`: 
+1. **You can specify where to get the configuration from.** To do this, you have to set system property `jcloudscale.configuration` (specified by the public constant `JCloudScaleClient.JCLOUDSCALE_CONFIGURATION_PROPERTY`) to point either to the file where configuration is stored or to the class that has the static parameterless method annotated with `@JCloudScaleConfigurationProvider` annotation and returns an instance of `JCloudScaleConfiguration`: 
 
         @JCloudScaleConfigurationProvider
         public static JCloudScaleConfiguration createConfiguration() {
@@ -752,7 +752,7 @@ The CLI is a prompt which currently supports the following commands:
 
         jcloudscale> ls-ch
 
-* `ch` (*or* `ch-details`) `UUID*OF*HOST` - Show details to the host with the given UUID.
+* `ch` (*or* `ch-details`) `UUID_OF_HOST` - Show details to the host with the given UUID.
 
         jcloudscale> ch f3d1dbfa-74d1-43af-ab05-ce45cb432dd9
 
