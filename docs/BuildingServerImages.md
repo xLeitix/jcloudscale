@@ -4,7 +4,7 @@ JCloudScale uses custom server images to scale up and down. These images are rel
 
 # Building your Image
 
-1. Start off by launching a new instance in your cloud. This instance will serve as the blueprint of our JCloudScale image. The size of the instance does not matter, but the operating system should be Linux-based. The following discussion will assume that you are using Ubuntu 12.04, 12.10 or 13.04. Other Linux-based distributions will work as well, but you may need to use different distro-specific mechanisms to e.g., install the JCloudScale service. We assume that you are logged into the server using a user named `ubuntu`.
+1. Start off by launching a new instance in your cloud. This instance will serve as the blueprint of our JCloudScale image. The size of the instance does not matter, but the operating system should be Linux-based. The following discussion will assume that you are using Ubuntu 12.04, 12.10 or 13.04. Other Linux-based distributions should work as well, but you may need to use different distro-specific mechanisms to e.g., install the JCloudScale service. We assume that you are logged into the server using a user named `ubuntu`.
 1. Install Maven 3 and Java 7 on this host, e.g., run `sudo apt-get update; sudo apt-get install openjdk-7-jdk maven`
 1. Create a new directory `mkdir /home/ubuntu/JCloudScaleService`. In this directory, add the following `pom.xml` Maven POM file:
 
@@ -39,6 +39,7 @@ JCloudScale uses custom server images to scale up and down. These images are rel
                            <plugin>
                                 <groupId>org.codehaus.mojo</groupId>
                                 <artifactId>exec-maven-plugin</artifactId>
+								<version>1.2.1</version>
                                 <executions>
                                      <execution>
                                           <goals>
@@ -51,7 +52,7 @@ JCloudScale uses custom server images to scale up and down. These images are rel
                                      <arguments>
                                           <argument>-classpath</argument>
                                           <classpath />
-                                       <argument>at.ac.tuwien.infosys.jcloudscale.server.JCloudScaleServerRunner</argument>
+                                          <argument>at.ac.tuwien.infosys.jcloudscale.server.JCloudScaleServerRunner</argument>
                                      </arguments>
                                 </configuration>
                            </plugin>
@@ -59,7 +60,22 @@ JCloudScale uses custom server images to scale up and down. These images are rel
             </build>
         </project>
 
-1. This POM file will load version `0.4.0` from the Infosys Maven repository (as well as all dependencies of JCloudScale) and start the server process. Test the build file via `mvn exec:exec` from the same directory as the POM file. You should see plenty of dependencies being downloaded and the service being started. When the service comes up successfully, you will not see any output.
+1. This POM file will load version `0.4.0` from the Infosys Maven repository (as well as all dependencies of JCloudScale) and start the server process. Additionally, you may add any other static dependencies that your application requires here. For example, in the code above, we added `jcloudscale.datastorelib` to `dependencies` section. You can remove it in case you don't need functionality provided by [this library](DatastoreAPI.md). Also consider specifying manually the memory limits (-Xmx parameter) for the started java process as default java memory limits are [quite limiting](http://docs.oracle.com/javase/6/docs/technotes/guides/vm/gc-ergonomics.html):
+
+                                ...
+                                <configuration>
+                                     <executable>java</executable>
+                                     <arguments>
+                                          <argument>-classpath</argument>
+										  <classpath />
+										  <argument>-Xmx2048m</argument>
+										  <argument>at.ac.tuwien.infosys.jcloudscale.server.JCloudScaleServerRunner</argument>
+                                     </arguments>
+                                </configuration>
+                                ...
+
+1. Test the build file via `mvn exec:exec` from the same directory as the POM file. You should see plenty of dependencies being downloaded and the service being started. When the service comes up successfully, you should not see any output.
+
 1. Now we need to create a Linux startup service that uses this Maven directive. For Ubuntu, create a file `/etc/init/jcloudscale.conf` with the following content:
        
         # jcloudscaleService - jcloudscale job file
