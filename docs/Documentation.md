@@ -485,7 +485,7 @@ To the largest extend, deployment in EC2 works exactly like explained above for 
     accessKey = YOUR_ACCESS_KEY_IN_AWS
     secretKey = YOUR_SECRET_KEY_IN_AWS
 
-Furthermore, an AMI that implements the JCloudScale server component is required. For version 0.4.0, you can use the public image `ami-4f645e26` in EC2. Alternatively, you can easily build your own image based on our [tutorial](BuildingServerImages.md).
+Furthermore, an AMI that implements the JCloudScale server component is required. For version 0.4.0, you can use the public image `ami-4f645e26` or `ami-80ce38f7` in EC2. Alternatively, you can easily build your own image based on our [tutorial](BuildingServerImages.md).
 
     new JCloudScaleConfigurationBuilder(
     	new EC2CloudPlatformConfiguration()
