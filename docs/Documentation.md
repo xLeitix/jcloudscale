@@ -412,7 +412,7 @@ Before you can start using Openstack from JCloudScale-based application, you hav
 
 To get such an image, either refer to our [tutorial on building server images](BuildingServerImages.md), or download our [pre-built image (0.4.0)](http://www.infosys.tuwien.ac.at/staff/leitner/cloud_images/JCloudScale_v0.4.0.img).
 
-If you don't want to specify the name or id of the created image in the application configuration explicitly, you have to name it accordingly to JCloudScale conventions. If neither name nor id of the virtual machine image is specified, JCloudScale tries to find the image that is named `"JCloudScale"+"_v"+JCloudScaleConfiguration.CS_VERSION` (e.g., `JCloudScale_v0.4.0` if application is using JCloudScale with version 0.4.0).  Additionally, an Apache ActiveMQ instance needs to be available that is accessible both from the client and from cloud hosts. We do not provide a specific ActiveMQ image, as ActiveMQ can be easily installed on any Linux-based operating system, e.g., via apt-get in Debian-based distributions.
+If you don't want to specify the name or id of the created image in the application configuration explicitly, you have to name it accordingly to JCloudScale conventions. If neither name nor id of the virtual machine image is specified, JCloudScale tries to find the image that is named `"JCloudScale"+"_v"+JCloudScaleConfiguration.CS_VERSION` (e.g., `JCloudScale_v0.4.0` if application is using JCloudScale with version 0.4.0).  Additionally, an Apache ActiveMQ instance needs to be available that is accessible both from the client and from cloud hosts.
 
 In addition, to speedup application startup process, you can use **static JCloudScale instances**. Static instance is the virtual machine that has JCloudScale service running and is started prior to application startup. At startup, JCloudScale queries for running cloud hosts through message queue. Hosts that answered are used as static hosts. Therefore, to become a static instance, JCloudScale service should be properly configured to connect to the correct message queue server. 
 
@@ -496,7 +496,7 @@ Furthermore, an AMI that implements the JCloudScale server component is required
     		.withSshKey(sshKeyName))
       .build();
 	  
-Additionally, don't forget to setup and configure AciveMQ server as it was described [above](Documentation.md#configuring-message-queue-server).
+Additionally, don't forget to setup and configure AciveMQ server as it was described [above](Documentation.md#configuring-message-queue-server). Instead of building your own ActiveMQ server image, you may consider using a pre-built image `ami-ad5fbdda`.
 
 #  Event-Based Monitoring 
 
