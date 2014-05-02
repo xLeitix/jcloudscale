@@ -485,7 +485,7 @@ To the largest extend, deployment in EC2 works exactly like explained above for 
     accessKey = YOUR_ACCESS_KEY_IN_AWS
     secretKey = YOUR_SECRET_KEY_IN_AWS
 
-Furthermore, an AMI that implements the JCloudScale server component is required. For version 0.4.0, you can use the public image `ami-4f645e26` or `ami-80ce38f7` in EC2. Alternatively, you can easily build your own image based on our [tutorial](BuildingServerImages.md).
+Furthermore, an AMI that implements the JCloudScale server component is required. For version 0.4.0, you can use the public image `ami-4f645e26` (US East, N. Virginia region)  or `ami-80ce38f7` (EU, Ireland region) in EC2. Alternatively, you can easily build your own image based on our [tutorial](BuildingServerImages.md).
 
     new JCloudScaleConfigurationBuilder(
     	new EC2CloudPlatformConfiguration()
@@ -496,7 +496,7 @@ Furthermore, an AMI that implements the JCloudScale server component is required
     		.withSshKey(sshKeyName))
       .build();
 	  
-Additionally, don't forget to setup and configure AciveMQ server as it was described [above](Documentation.md#configuring-message-queue-server). Instead of building your own ActiveMQ server image, you may consider using a pre-built image `ami-ad5fbdda`.
+Additionally, don't forget to setup and configure AciveMQ server as it was described [above](Documentation.md#configuring-message-queue-server). Instead of building your own ActiveMQ server image, you may consider using a pre-built image `ami-fba28792` (US East, N. Virginia region) or `ami-ad5fbdda` (EU, Ireland region).
 
 #  Event-Based Monitoring 
 
@@ -717,7 +717,7 @@ Alternatively, users can also just get and start a binary distribution of the CL
     <dependency>
     	<groupId>jcloudscale</groupId>
     	<artifactId>jcloudscale.cli</artifactId>
-    	<version>0.2.0</version>
+    	<version>0.4.0</version>
     </dependency>
 
 With this dependency in place, the CLI can be started by running `at.ac.tuwien.infosys.jcloudscale.cli.CLI`. For instance, users could add the following profile to their MVN build:
