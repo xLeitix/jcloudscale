@@ -10,10 +10,6 @@ You can run the end-to-end tests of JCloudScale via
 
     mvn clean verify -P local-tests
 
-Finally, a small sample application is also included. You can run it with the following command:
-
-    cd core; mvn clean install -Dskiptests; cd ..; cd ext/samples/SentimentAnalysis; mvn clean compile exec:exec
-
 If you don't want to mess with the JCloudScale source code, following documentation explains how to work with the binaries using [maven](http://maven.apache.org/).
 
 #  Introduction 
