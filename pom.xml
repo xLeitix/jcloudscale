@@ -7,7 +7,7 @@
     <name>JCloudScale</name>
     <description>JCloudScale</description>
 
-    <packaging>pom</packaging>
+    <packaging>war</packaging>
 
     <modules>
         <module>core</module>
